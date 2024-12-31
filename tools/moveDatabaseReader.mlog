@@ -1,0 +1,211 @@
+spl new move Move 4:type 3:eff1 7:val1 7:acc1 3:eff2 7:val2 7:acc2
+
+sensor sw switch1 @enabled
+jump backward equal sw true
+sensor sw switch2 @enabled
+jump forward equal sw true
+end
+backward:
+control enabled switch1 0
+op add moveID moveID -1
+fun have draw
+end
+forward:
+control enabled switch2 0
+op add moveID moveID 1
+fun have draw
+end
+
+fun new draw
+draw clear 0 0 0
+fun have getMoveInfo
+print "Move: "
+print moveName
+read move cell1 moveID
+print "\n   Type: "
+print moveType
+spl of effect Move eff1
+print "\n\nEffect 1: "
+print effect
+spl of value Move val1
+print "\n   Value: "
+print value
+spl of acc Move acc1
+print "\n   Accuracy: "
+print acc
+spl of effect Move eff2
+print "\n\nEffect 2: "
+print effect
+spl of value Move val2
+print "\n   Value: "
+print value
+spl of acc Move acc2
+print "\n   Accuracy: "
+print acc
+draw print 0 90 left
+df display1
+fun close
+
+fun new getMoveInfo
+op mul moveID' moveID 3
+op add @counter @counter moveID'
+set moveName "Manipulate"
+set moveType "Logic"
+jump gotMove
+set moveName "Disable"
+set moveType "Logic"
+jump gotMove
+set moveName "RCE"
+set moveType "Logic"
+jump gotMove
+set moveName "Remote Shutdown"
+set moveType "Logic"
+jump gotMove
+set moveName "Kinesis"
+set moveType "Logic"
+jump gotMove
+set moveName "Single Shot"
+set moveType "Offense"
+jump gotMove
+set moveName "Double Shot"
+set moveType "Offense"
+jump gotMove
+set moveName "Full Round"
+set moveType "Offense"
+jump gotMove
+set moveName "Ground Missile"
+set moveType "Offense"
+jump gotMove
+set moveName "Turret Guns"
+set moveType "Defense"
+jump gotMove
+set moveName "Disrupting Round"
+set moveType "Defense"
+jump gotMove
+set moveName "Intercept"
+set moveType "Defense"
+jump gotMove
+set moveName "Blitz"
+set moveType "Normal"
+jump gotMove
+set moveName "Collide"
+set moveType "Normal"
+jump gotMove
+set moveName "Bludgeon"
+set moveType "Normal"
+jump gotMove
+set moveName "Normal Beam"
+set moveType "Normal"
+jump gotMove
+set moveName "Paralyzing Beam"
+set moveType "Support"
+jump gotMove
+set moveName "Pick and Drop"
+set moveType "Support"
+jump gotMove
+set moveName "Ionized Fire"
+set moveType "Fire"
+jump gotMove
+set moveName "Throw Slag"
+set moveType "Fire"
+jump gotMove
+set moveName "Melt"
+set moveType "Fire"
+jump gotMove
+set moveName "Oil Bomb"
+set moveType "Fire"
+jump gotMove
+set moveName "Water Gun"
+set moveType "Water"
+jump gotMove
+set moveName "Charged Scald"
+set moveType "Water"
+jump gotMove
+set moveName "Pressure Wash"
+set moveType "Water"
+jump gotMove
+set moveName "Mortar Fire"
+set moveType "Artillery"
+jump gotMove
+set moveName "Long Distance Shells"
+set moveType "Artillery"
+jump gotMove
+set moveName "Zap"
+set moveType "Energy"
+jump gotMove
+set moveName "Stun Gun"
+set moveType "Energy"
+jump gotMove
+set moveName "Energy Blades"
+set moveType "Energy"
+jump gotMove
+set moveName "EMP Shell"
+set moveType "Energy"
+jump gotMove
+set moveName "Convey"
+set moveType "Industry"
+jump gotMove
+set moveName "Spill"
+set moveType "Industry"
+jump gotMove
+set moveName "Distribute"
+set moveType "Industry"
+jump gotMove
+set moveName "Blast Bomb"
+set moveType "Industry"
+jump gotMove
+set moveName "Landmine"
+set moveType "Ground"
+jump gotMove
+set moveName "Bulldoze"
+set moveType "Ground"
+jump gotMove
+set moveName "Shield Slam"
+set moveType "Support"
+jump gotMove
+set moveName "All Weapons"
+set moveType "Offense"
+jump gotMove
+set moveName "Corrupt Systems"
+set moveType "Logic"
+jump gotMove
+set moveName "Magnetic Waves"
+set moveType "Force"
+jump gotMove
+set moveName "Reactive Shell"
+set moveType "Defense"
+jump gotMove
+set moveName "Overheat"
+set moveType "Fire"
+jump gotMove
+set moveName "Flood"
+set moveType "Water"
+jump gotMove
+set moveName "Energy Geyser"
+set moveType "Energy"
+jump gotMove
+set moveName "Replicate Swarm"
+set moveType "Core"
+jump gotMove
+set moveName "Replicate Pulse"
+set moveType "Core"
+jump gotMove
+set moveName "Duplex Storm"
+set moveType "Core"
+jump gotMove
+set moveName "Imported Blast"
+set moveType "Core"
+jump gotMove
+set moveName "Scatter Bombs"
+set moveType "Air"
+jump gotMove
+set moveName "Napalm Shell"
+set moveType "Artillery"
+jump gotMove
+set moveName "Earthquake"
+set moveType "Ground"
+jump gotMove
+set moveName "Laser Cannon"
+set moveType "Energy"
+gotMove:
+fun close

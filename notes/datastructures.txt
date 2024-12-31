@@ -1,0 +1,122 @@
+Pokemindustry DX: Data Structures
+
+Map Tile:
+	4: opacity
+	3: floor a / floor b / wall a / wall b / grass 1 floor a / grass 1 floor b / grass 2 floor a / grass 2 floor b
+	1: is object pointer?
+
+Trainer & Companions 1 through 3:
+	4: floor opacity
+	1: floor type
+	14: companion template 1 (7 bits for level, 7 bits for id)
+	14: companion template 2
+	14: companion template 3
+	3: total companion amount
+	1: remains after being beaten yes/no
+	1: the trainer detection bit
+
+Companions 4 through 6: 
+	5: jack shit
+	14: companion template 4
+	14: companion template 5
+	14: companion template 6
+
+MapCompanion (Singular companion's object entry on the world map):
+	4: floor opacity
+	1: floor type
+	3: object id
+	7: companion id
+	7: level
+	7: move id 1
+	7: move id 2
+	7: move id 3
+	7: move id 4
+
+Detector:
+	4: floor opacity
+	1: floor type
+	3: object id
+	12: trainer location on the map (trainer's tile) (used for the ! bubble)
+	7: trainer location in memory
+
+Door:
+	4: floor opacity (might be unused)
+	1: floor type (might be unused)
+	3: object id
+	7: destination map
+	6: destination x
+	6: destination y
+	6: lower bounds x
+	6: lower bounds y
+	6: upper bounds x
+	6: upper bounds y
+
+Move:
+	4: type
+	3: effect 1 (none / physical attack / special attack / priority phyiscal attack / priority special attack / apply electrified / apply melting / invalid)
+	7: value 1
+	7: accuracy 1
+	3: effect 2 (none / physical attack / special attack / - / - / apply electrified / apply melting / invalid) (doesn't compute priority, but takes priority of effect 1) (only triggers if effect 1 succeeds -> accuracy is dependent)
+	7: value 2
+	7: accuracy 1
+
+Companion Index Slot:
+	2 * 24: status (not seen / seen / (unused) / caught)
+	
+Companion (Database entry):
+	4: type 1
+	4: type 2
+	6: base health (0.2 points of health per unit of value => 1 unit of value = 20 points of health at lvl 100) (do not put more than 50, oct will have 50)
+	6: base speed
+	6: base physical attack
+	6: base physical defense
+	6: base electric attack
+	6: base electric defense
+	6: base experience reward
+
+Evolutions
+	7: level to evolve (0 = no evolution)
+	7: id of new companion type
+
+Learnset, slots 1-4, learn levels sorted in ascending order!!!!
+	7: move id 1 (0 = empty)
+	7: learn level 1 (0 = learned by default)
+	7: move id 2
+	7: learn level 2
+	7: move id 3
+	7: learn level 3
+
+Companion (Complete)
+	Slot 1: id
+	Slot 2: 4:type 1 / 4:type 2
+	Slot 3: 10:health / 10:max health
+	Slot 4: level, status
+	Slot 5: experience
+	Slot 6: max experience (used pretty much only for the companions tab)
+	Slot 7: moves
+
+Banked Companion
+	Slot 1:
+		7: id
+		7: level
+		17: experience
+	Slot 2:
+		7: move 1
+		7: move 2
+		7: move 3
+		7: move 4
+
+Companion in battle
+	Slot 1: id, types
+	Slot 2: level, status
+	Slot 3: health, maxHealth
+	Slot 4: move 1
+	Slot 5: move 2
+	Slot 6: move 3
+	Slot 7: move 4
+
+Message
+	5:text
+	7:unit id
+	7:unit level
+	7:move id

@@ -1,0 +1,928 @@
+# mainOutOfBattle.mlog
+
+spl new tileMemory TileMemory 8 * 6
+spl new object Object 5:floorData 3:objType 43:air 1:trainerBit
+spl new object Trainer 5:floorData 42:companions 3:companionCount 1:remainsAfterBeingBeaten 1:trainerBit
+spl new object Door 5:floorData 3:objType 7:map 6:x 6:y 6:lowerX 6:lowerY 6:upperX 6:upperY
+spl new tileData ObjectTile 7:pointer 1:isObject
+spl new tileData TerrainTile 4:alpha 3:meta
+spl new databaseCompanion DatabaseCompanion 8:types 6:healthScalar 6:speed 6:pAtk 6:pDef 6:eAtk 6:eDef 6:expRewardScalar
+spl new learnsetSegment LearnsetSegment 14 * 3
+spl new learnsetMove LearnsetMove 7:id 7:level
+spl new moveset Moveset 7 * 4
+spl new dex Dex 2 * 24
+spl new boxStats BoxStats 7:id 7:level 17:experience
+spl new object Detector 5:floorData 3:objType 12:mapLocation 7:memoryLocation
+
+expect bank1 bank21 bank22 cell1 cell2 cell3 cell4 cell5
+hardInit:
+read mapReady bank1 511
+jump 0 equal mapReady 0
+set mainInterface cell1
+set renderInterface cell2
+set moveDatabase cell3
+set touchInterfaceDisplay cell4
+set touchInterfaceDpad cell5
+set companionDatabase bank21
+set companionBox bank22
+set trapDoorIndex 4
+set detectorIndex 7
+write 0 renderInterface 34
+write 0 renderInterface 35
+write 0 renderInterface 36
+write 0 renderInterface 37
+for i = 0 < 42 1
+write 0 mainInterface i
+next
+fun have setInitVariables
+
+fun have awaitTouchscreenLibReadyStatus
+set menuIndex 1
+fun have setMenus
+
+mainLoop:
+read action touchInterfaceDisplay 59
+fun have actionDisplay greaterThan action -1
+read action touchInterfaceDpad 59
+fun have actionDpad greaterThan action -1
+jump checkRenderCompletion equal rendering true
+checkPendingRender:
+fun have render equal pendingRender true
+jump mainLoop
+
+checkRenderCompletion:
+read ready renderInterface 1
+jump mainLoop notEqual ready 1
+read ready renderInterface 2
+jump mainLoop notEqual ready 1
+read ready renderInterface 3
+jump mainLoop notEqual ready 1
+read ready renderInterface 4
+jump mainLoop notEqual ready 1
+read ready renderInterface 5
+jump mainLoop notEqual ready 1
+read ready renderInterface 6
+jump mainLoop notEqual ready 1
+read ready renderInterface 7
+jump mainLoop notEqual ready 1
+read ready renderInterface 8
+jump mainLoop notEqual ready 1
+read ready renderInterface 9
+jump mainLoop notEqual ready 1
+read ready renderInterface 10
+jump mainLoop notEqual ready 1
+read ready renderInterface 11
+jump mainLoop notEqual ready 1
+read ready renderInterface 12
+jump mainLoop notEqual ready 1
+read ready renderInterface 13
+jump mainLoop notEqual ready 1
+read ready renderInterface 14
+jump mainLoop notEqual ready 1
+read ready renderInterface 15
+jump mainLoop notEqual ready 1
+read playerRotation mainInterface 46
+op add playerRotation' 1 playerRotation
+op mul playerRotation' playerRotation' 90
+write 0 renderInterface 0
+tick
+draw color 0 0 0 160
+draw poly 88 88 3 7 playerRotation'
+draw color 0 255 0 255
+draw poly 88 88 3 5 playerRotation'
+df display1
+write 0 renderInterface 1
+write 0 renderInterface 2
+write 0 renderInterface 3
+write 0 renderInterface 4
+write 0 renderInterface 5
+write 0 renderInterface 6
+write 0 renderInterface 7
+write 0 renderInterface 8
+write 0 renderInterface 9
+write 0 renderInterface 10
+write 0 renderInterface 11
+write 0 renderInterface 12
+write 0 renderInterface 13
+write 0 renderInterface 14
+write 0 renderInterface 15
+set loadMap false
+set rendering false
+jump checkPendingRender
+
+fun new setMenus
+write menuIndex mainInterface 60
+parr menuIndex
+# --- No Menus Open
+set menuIndexDisplay 0
+set menuIndexDpad 0
+/
+# --- Choose Starter
+set menuIndexDisplay 4
+set menuIndexDpad 1
+/
+# --- Main Menu
+set menuIndexDisplay 1
+set menuIndexDpad 2
+write -1 mainInterface 63 # reset selectedElement
+set dpadSelectionLimiter 4
+/
+# --- Companion Index
+set menuIndexDisplay 2
+set menuIndexDpad 3
+write 0 mainInterface 63
+set dpadSelectionLimiter 90
+/
+# --- Companions Tab
+set menuIndexDisplay 3
+set menuIndexDpad 4
+write -1 mainInterface 63
+write -1 renderInterface 54
+read dpadSelectionLimiter mainInterface 42
+/
+# --- Companion View
+set menuIndexDisplay 5
+set menuIndexDpad 3
+write 0 mainInterface 63
+set dpadSelectionLimiter 3
+/
+# --- About
+set menuIndexDisplay 4
+set menuIndexDpad 5
+/
+# --- Companion Box
+set menuIndexDisplay 6
+set menuIndexDpad 6
+write 0 mainInterface 63
+write 0 companionBox 63
+read companionCount mainInterface 42
+op add dpadSelectionLimiter companionCount 1
+op min dpadSelectionLimiter dpadSelectionLimiter 6
+/
+# --- Heal Message
+set menuIndexDisplay -1 # no change
+set menuIndexDpad 12
+//
+write menuIndexDisplay touchInterfaceDisplay 58
+write menuIndexDpad touchInterfaceDpad 58
+fun have awaitTouchscreenLibReadyStatus
+fun close
+
+fun new actionDisplay
+parr menuIndexDisplay
+# --- None
+/
+# --- Main Menu
+set selectedElement action
+jump simulateMainMenuSelectPress
+/
+# --- Companion Index
+/
+# --- Companions
+/
+# --- About Screen
+/
+# --- Companion View
+/
+# --- Companion Box Left
+read selectedElement mainInterface 63
+read boxCompanionCount companionBox 510
+read boxCompanionSelect companionBox 511
+op add boxCompanionSelectionLimiter' boxCompanionCount 1
+op min boxCompanionSelectionLimiter boxCompanionSelectionLimiter' 250
+parr action
+op add boxCompanionSelect boxCompanionSelect boxCompanionSelectionLimiter
+op add boxCompanionSelect boxCompanionSelect -1
+op mod boxCompanionSelect boxCompanionSelect boxCompanionSelectionLimiter
+write boxCompanionSelect companionBox 511
+write 1 touchInterfaceDisplay 0
+/
+op add boxCompanionSelect boxCompanionSelect 1
+op mod boxCompanionSelect boxCompanionSelect boxCompanionSelectionLimiter
+write boxCompanionSelect companionBox 511
+write 1 touchInterfaceDisplay 0
+/
+read companionCount mainInterface 42
+op notEqual validate1 companionCount 6
+op notEqual validate2 boxCompanionCount 250
+op equal oneWayToBox boxCompanionSelect boxCompanionCount
+op equal oneWayToTeam selectedElement companionCount
+op mul oneWayToTeam oneWayToTeam validate1
+op mul oneWayToBox oneWayToBox validate2
+op add way oneWayToBox oneWayToTeam
+jump endActionDisplay equal way 2
+op equal trainerHasOneCompanionLeft companionCount 1
+op add teamWillBeEmpty trainerHasOneCompanionLeft oneWayToBox
+jump endActionDisplay equal teamWillBeEmpty 2
+op mul boxIndex boxCompanionSelect 2
+op add boxIndex' boxIndex 1
+read boxStats companionBox boxIndex
+read moveset companionBox boxIndex'
+fun have unbox
+op mul idIndex selectedElement 7
+op add typeIndex idIndex 1
+op add healthIndex idIndex 2
+op add levelIndex idIndex 3
+op add expIndex idIndex 4
+op add expMaxIndex idIndex 5
+op add movesetIndex idIndex 6
+read otherID mainInterface idIndex
+read otherLevel mainInterface levelIndex
+op mod otherLevel otherLevel 0b10000000
+read otherExp mainInterface expIndex
+read otherMoveset mainInterface movesetIndex
+write otherMoveset companionBox boxIndex'
+write moveset mainInterface movesetIndex
+set boxStats otherID
+spl wf- otherLevel BoxStats level
+spl wf- otherExp BoxStats experience
+write boxStats companionBox boxIndex
+write companionID mainInterface idIndex
+write companionLevel mainInterface levelIndex
+read databaseCompanion companionDatabase companionID
+spl of companionTypes DatabaseCompanion types
+write companionTypes mainInterface typeIndex
+write maxHealth mainInterface healthIndex
+write exp mainInterface expIndex
+write expMax mainInterface expMaxIndex
+op sub companionCount companionCount oneWayToBox
+op add companionCount companionCount oneWayToTeam
+write companionCount mainInterface 42
+op add dpadSelectionLimiter companionCount 1
+op min dpadSelectionLimiter dpadSelectionLimiter 6
+op add boxCompanionCount boxCompanionCount oneWayToBox
+op sub boxCompanionCount boxCompanionCount oneWayToTeam
+write boxCompanionCount companionBox 510
+fun have cleanupBox equal oneWayToTeam 1
+fun have cleanupTeam equal oneWayToBox 1
+write 1 touchInterfaceDpad 0
+op mul selectedElement selectedElement oneWayToBox
+op mul boxCompanionSelect boxCompanionSelect oneWayToTeam
+write selectedElement mainInterface 63
+write boxCompanionSelect companionBox 511
+//
+write 1 touchInterfaceDisplay 0
+//
+endActionDisplay:
+write -1 touchInterfaceDisplay 59
+fun close
+
+fun new actionDpad
+read selectedElement mainInterface 63
+op min menuIndexDpad' menuIndexDpad 7
+parr menuIndexDpad'
+# --- No Menus Open
+jump notDpad greaterThan action 3
+fun have walk
+jump endActionDpad
+notDpad:
+op sub action action 4
+parr action
+# interact with objects
+fun have considerFacingTile
+jump endActionDpad equal proceed false
+op mul tileIndex targetY 48
+op add tileIndex tileIndex targetX
+op mod tileDataIndex tileIndex 6
+op idiv tileMemoryIndex tileIndex 6
+read tileMemory mapInterface tileMemoryIndex
+spl od tileData TileMemory tileDataIndex
+spl of isObject ObjectTile isObject
+jump endActionDpad equal isObject 0
+spl of objectPointer ObjectTile pointer
+op add objectPointer objectPointer 384
+read object mapInterface objectPointer
+spl of trainerFlag Object trainerBit
+jump interactWithTrainer equal trainerFlag 1
+spl of objType Object objType
+
+parr objType
+interactWithTrainer:
+spl of companionCount Trainer companionCount
+spl of remains Trainer remainsAfterBeingBeaten
+spl of companions Trainer companions
+write companions renderInterface 16
+write companionCount renderInterface 19
+write 2 renderInterface 18
+jump initBattleTrainer1 lessThanEq companionCount 3
+op add objectPointer' objectPointer 1
+read object2 mapInterface objectPointer'
+op shr object2 object2 5
+write object2 renderInterface 17
+initBattleTrainer1:
+jump endActionDpad equal companionCount 0
+fun have startBattle
+read lost renderInterface 40
+jump handleBattleLoss equal lost 1
+spl cf Trainer companionCount
+write object mapInterface objectPointer
+jump renderAlready equal remains 1
+spl of floorData Trainer floorData
+spl wd floorData TileMemory tileDataIndex
+write tileMemory mapInterface tileMemoryIndex
+renderAlready:
+set menuIndex 0
+fun have setMenus
+set pendingRender true
+/
+set menuIndex 7
+fun have setMenus
+/
+fun have fountainEffect
+set menuIndex 8
+fun have setMenus
+/
+spl of destMap Door map
+spl of destX Door x
+spl of destY Door y
+spl of lowerBoundX Door lowerX
+spl of lowerBoundY Door lowerY
+spl of upperBoundX Door upperX
+spl of upperBoundY Door upperY
+write destX mainInterface 43
+write destY mainInterface 44
+write destMap mainInterface 45
+write lowerBoundX mainInterface 47
+write lowerBoundY mainInterface 48
+write upperBoundX mainInterface 49
+write upperBoundY mainInterface 50
+getlink mapInterface destMap
+set loadMap true
+set pendingRender true
+/
+/
+op shr object' object 8
+write object' renderInterface 16
+write 1 renderInterface 18
+write 1 renderInterface 19
+fun have startBattle
+read lost renderInterface 40
+jump handleBattleLoss equal lost 1
+spl of floorData Object floorData
+spl wd floorData TileMemory tileDataIndex
+write tileMemory mapInterface tileMemoryIndex
+set menuIndex 0
+fun have setMenus
+set pendingRender true
+/
+//
+/
+# open main menu
+set menuIndex 2
+fun have setMenus
+//
+/
+# --- Choose Starter
+parr action
+set companionID 0
+fun have generateStarterCompanion
+spl wf- 3 Dex 0
+write dex renderInterface 34
+/
+set companionID 9
+fun have generateStarterCompanion
+spl wf- 3 Dex 9
+write dex renderInterface 34
+//
+write 1 mainInterface 42
+write 1 mainInterface 52
+set menuIndex 0
+fun have setMenus
+set loadMap true
+set pendingRender true
+/
+# --- Main Menu
+parr action
+fun have shiftSelectionForward
+/
+fun have shiftSelectionBackward
+/
+simulateMainMenuSelectPress:
+jump endActionDpad lessThan selectedElement 0
+parr selectedElement
+set menuIndex 3
+fun have setMenus
+/
+set menuIndex 4
+fun have setMenus
+/
+read expShare mainInterface 51
+op add expShare expShare 1
+op mod expShare expShare 3
+write expShare mainInterface 51
+write 1 touchInterfaceDisplay 0
+/
+set menuIndex 6
+fun have setMenus
+//
+write -1 touchInterfaceDisplay 59
+/
+set menuIndex 0
+fun have setMenus
+set pendingRender true
+//
+/
+# --- Companion Index or Companion View
+parr action
+fun have shiftSelectionForward
+/
+fun have shiftSelectionBackward
+/
+jump companionViewBackButton equal menuIndex 5
+set menuIndex 2
+jump companionIndexBackButton
+companionViewBackButton:
+set menuIndex 4
+companionIndexBackButton:
+fun have setMenus
+//
+/
+# --- Companions Tab
+parr action
+fun have shiftSelectionForward
+/
+fun have shiftSelectionBackward
+/
+read companionIndex mainInterface 63
+write companionIndex renderInterface 53
+set menuIndex 5
+fun have setMenus
+/
+read actioned mainInterface 63
+read swapWith renderInterface 54
+op notEqual swapping swapWith -1
+parr swapping
+write actioned renderInterface 54
+/
+jump doneSwapping equal actioned swapWith
+op mul startIndex1 actioned 7
+op mul startIndex2 swapWith 7
+op add stopIndex1 startIndex1 7
+for startIndex1 < stopIndex1 1
+read value1 mainInterface startIndex1
+read value2 mainInterface startIndex2
+write value2 mainInterface startIndex1
+write value1 mainInterface startIndex2
+op add startIndex2 startIndex2 1
+next
+doneSwapping:
+write -1 renderInterface 54
+//
+write 4 touchInterfaceDisplay 63
+/
+set menuIndex 2
+fun have setMenus
+//
+/
+# --- About
+set menuIndex 2
+fun have setMenus
+/
+# --- Companion Box Right
+read companionCount mainInterface 42
+parr action
+op add selectedElement selectedElement dpadSelectionLimiter
+op add selectedElement selectedElement -1
+op mod selectedElement selectedElement dpadSelectionLimiter
+write selectedElement mainInterface 63
+write 1 touchInterfaceDpad 0
+/
+op add selectedElement selectedElement 1
+op mod selectedElement selectedElement dpadSelectionLimiter
+write selectedElement mainInterface 63
+write 1 touchInterfaceDpad 0
+/
+set menuIndex 0
+fun have setMenus
+set pendingRender true
+//
+/
+# --- Heal Message
+set menuIndex 0
+fun have setMenus
+//
+endActionDpad:
+write -1 touchInterfaceDpad 59
+fun close
+
+fun new shiftSelectionForward
+op add selectedElement selectedElement dpadSelectionLimiter
+op add selectedElement selectedElement -1
+op mod selectedElement selectedElement dpadSelectionLimiter
+write selectedElement mainInterface 63
+write 1 touchInterfaceDisplay 0
+fun close
+
+fun new shiftSelectionBackward
+op add selectedElement selectedElement 1
+op mod selectedElement selectedElement dpadSelectionLimiter
+write selectedElement mainInterface 63
+write 1 touchInterfaceDisplay 0
+fun close
+
+fun new setInitVariables
+set mapInterface bank1
+write -1 touchInterfaceDisplay 59
+write -1 touchInterfaceDpad 59
+write 7 mainInterface 43
+write 7 mainInterface 44
+write 0 mainInterface 45
+write 0 mainInterface 46
+write 0 mainInterface 47 # lower dynamic map bounds
+write 0 mainInterface 48
+write 47 mainInterface 49 # upper dynamic map bounds
+write 47 mainInterface 50
+set battleAfterWalk false
+fun close
+
+fun new considerFacingTile
+read playerX mainInterface 43
+read playerY mainInterface 44
+read playerRotation mainInterface 46
+read lowerBoundX mainInterface 47
+read lowerBoundY mainInterface 48
+read upperBoundX mainInterface 49
+read upperBoundY mainInterface 50
+parr playerRotation
+op add targetY playerY 1
+op lessThanEq proceed targetY upperBoundY
+set targetX playerX
+/
+op add targetX playerX -1
+op greaterThanEq proceed targetX lowerBoundX
+set targetY playerY
+/
+op add targetY playerY -1
+op greaterThanEq proceed targetY lowerBoundY
+set targetX playerX
+/
+op add targetX playerX 1
+op lessThanEq proceed targetX upperBoundX
+set targetY playerY
+//
+fun close
+
+fun new fountainEffect
+for healthIndex = 2 < 38 7
+read healthStats mainInterface healthIndex
+op and maxHealth healthStats 0b11111111110000000000
+op shr health maxHealth 10
+op add healthStats health maxHealth
+write healthStats mainInterface healthIndex
+op add statusIndex healthIndex 1
+read status mainInterface statusIndex
+op and status status 0b1111111
+write status mainInterface statusIndex
+next
+read companionCount mainInterface 42
+write companionCount mainInterface 52 # all companions can fight
+fun close
+
+handleBattleLoss:
+write 0 renderInterface 40
+read companionCount mainInterface 42
+op sub companionCount companionCount 1
+jump resetGame lessThanEq companionCount 0
+write companionCount mainInterface 42
+fun have fountainEffect
+write -1 touchInterfaceDisplay 59
+write -1 touchInterfaceDpad 59
+fun have setInitVariables
+set menuIndex 0
+fun have setMenus
+set loadMap true
+set pendingRender true
+jump mainLoop
+
+resetGame:
+for i = 0 <= 18 1
+getlink map i
+write 0 map 511
+next
+write 0 renderInterface 34
+write 0 renderInterface 35
+write 0 renderInterface 36
+write 0 renderInterface 37
+jump hardInit
+
+fun new walk
+op add noticeTimer @time 1200
+write action mainInterface 46
+fun have considerFacingTile
+jump dontWalk equal proceed false
+read comingFromTrapDoor mainInterface 62
+jump noTrapDoorLeaving equal comingFromTrapDoor 0
+
+op mul fromTileIndex playerY 48
+op add fromTileIndex fromTileIndex playerX
+op mod tileDataIndex fromTileIndex 6
+op idiv tileMemoryIndex fromTileIndex 6
+read tileMemory mapInterface tileMemoryIndex
+spl od tileData TileMemory tileDataIndex
+spl of objectPointer ObjectTile pointer
+op add objectPointer objectPointer 384
+read object mapInterface objectPointer
+spl of floorData Object floorData
+op or floorData floorData 0b101111 # turn into wall with max opacity
+spl wd floorData TileMemory tileDataIndex
+write tileMemory mapInterface tileMemoryIndex
+write 0 mainInterface 62
+
+noTrapDoorLeaving:
+op mul targetTileIndex targetY 48
+op add targetTileIndex targetTileIndex targetX
+op mod tileDataIndex targetTileIndex 6
+op idiv tileMemoryIndex targetTileIndex 6
+read tileMemory mapInterface tileMemoryIndex
+spl od tileData TileMemory tileDataIndex
+spl of objectFlag ObjectTile isObject
+jump walkingOnObjects equal objectFlag 1
+
+# walking on a TerrainTile
+spl new grassIDs Grass 49:encounters 3:speciesCount
+spl new grassIDs GrassIDs 7 * 7
+spl new grassMinLvs GrassMinLvs 7 * 7
+spl new grassMaxLvs GrassMaxLvs 7 * 7
+spl of meta TerrainTile meta
+jump dontWalk equal meta 2 # wall type a
+jump dontWalk equal meta 3 # wall type b
+jump resumeWalk lessThan meta 4 # keep walking if no grass
+read grassGrace mainInterface 52
+op sub grassGrace grassGrace 1
+op max grassGrace grassGrace 0
+write grassGrace mainInterface 52
+jump resumeWalk greaterThan grassGrace 0
+op rand noEncounterCriterium 1
+jump resumeWalk lessThan noEncounterCriterium 0.81
+
+# grass encounter
+write 4 mainInterface 52
+op sub grass meta 4
+op idiv grass grass 2
+op mul grass grass 3
+op add grassIDs grass 505
+read grassIDs mapInterface grassIDs
+spl of speciesCount Grass speciesCount
+jump resumeWalk equal speciesCount 0
+op rand species speciesCount
+op floor species species
+op add grassMinLvs grass 506
+op add grassMaxLvs grass 507
+read grassMinLvs mapInterface grassMinLvs
+read grassMaxLvs mapInterface grassMaxLvs
+spl od companionID GrassIDs species
+spl od minLevel GrassMinLvs species
+spl od maxLevel GrassMaxLvs species
+op sub randomLevels maxLevel minLevel
+op add randomLevels randomLevels 1
+op rand randomLevelAdd randomLevels
+op floor randomLevelAdd randomLevelAdd
+op add companionLevel minLevel randomLevelAdd
+op shl companionID' companionID 7
+op add companionStats companionID' companionLevel
+write companionStats renderInterface 16
+write 0 renderInterface 18
+write 1 renderInterface 19
+set inputX 83
+set inputY 93
+fun have notice
+noticeTimer1:
+jump noticeTimer1 lessThan @time noticeTimer
+fun have startBattle
+read lost renderInterface 40
+jump handleBattleLoss equal lost 1
+jump resumeWalk
+
+walkingOnObjects: # walking on an ObjectTile
+spl of objectPointer ObjectTile pointer
+op add objectPointer objectPointer 384
+read object mapInterface objectPointer
+spl of trainerFlag Object trainerBit
+jump dontWalk equal trainerFlag 1
+spl of objType Object objType
+jump walkTrapDoor equal objType trapDoorIndex
+jump dontWalk notEqual objType detectorIndex
+
+# detector
+spl of floorData Object floorData
+spl wd floorData TileMemory tileDataIndex
+write tileMemory mapInterface tileMemoryIndex
+spl of trainerTile Detector mapLocation
+spl of trainerPointer Detector memoryLocation
+op add trainerPointer trainerPointer 384
+read object mapInterface trainerPointer
+spl of companionCount Trainer companionCount
+jump resumeWalk equal companionCount 0
+
+op mod trainerX trainerTile 48
+op idiv trainerY trainerTile 48
+op sub relativeX trainerX playerX
+op sub relativeY trainerY playerY
+op mul inputX relativeX 12
+op add inputX inputX 83
+op mul inputY relativeY 12
+op add inputY inputY 93
+op add trainerPointer' trainerPointer 1
+read object'' mapInterface trainerPointer'
+op shr object' object 5
+op shr object'' object'' 5
+write object' renderInterface 16
+write object'' renderInterface 17
+write 2 renderInterface 18
+write companionCount renderInterface 19
+fun have notice
+noticeTimer2:
+jump noticeTimer2 lessThan @time noticeTimer
+fun have startBattle
+read lost renderInterface 40
+jump handleBattleLoss equal lost 1
+spl wf 0 Trainer companionCount
+write object mapInterface trainerPointer
+spl of remains Trainer remainsAfterBeingBeaten
+jump resumeWalk equal remains true
+op mod tileDataIndex trainerTile 6
+op idiv trainerMem trainerTile 6
+read tileMemory mapInterface trainerMem
+spl of floorData Trainer floorData
+spl wd floorData TileMemory tileDataIndex
+write tileMemory mapInterface trainerMem
+jump resumeWalk
+
+walkTrapDoor:
+write 1 mainInterface 62
+
+resumeWalk:
+write targetX mainInterface 43
+write targetY mainInterface 44
+dontWalk:
+set menuIndex 0
+fun have setMenus
+set pendingRender true
+fun close
+
+fun new render # expects loadMap
+set pendingRender false
+set rendering true
+op add outToRenderers 1 loadMap
+write outToRenderers renderInterface 0
+fun close
+
+fun new awaitTouchscreenLibReadyStatus
+waitForTouchscreenLibToGetReady:
+read ready touchInterfaceDisplay 58
+jump waitForTouchscreenLibToGetReady notEqual ready -1
+read ready touchInterfaceDpad 58
+jump waitForTouchscreenLibToGetReady notEqual ready -1
+fun close
+
+fun new unbox # boxStats
+spl of companionID BoxStats id
+spl of companionLevel BoxStats level
+fun have getHealthAndTypes
+spl of exp BoxStats experience
+fun have computeMaxExperience
+fun close
+
+fun new getHealthAndTypes # companionID, companionLevel
+read databaseCompanion companionDatabase companionID
+spl of types DatabaseCompanion types
+spl of healthScalar DatabaseCompanion healthScalar
+op add healthScalar' healthScalar 20
+op mul maxHealth companionLevel healthScalar'
+op idiv maxHealth maxHealth 10
+op add maxHealth maxHealth 5
+op shl maxHealth' maxHealth 10
+op add maxHealth maxHealth maxHealth'
+fun close
+
+fun new generateStarterCompanion # companionID
+set companionLevel 5
+fun have getHealthAndTypes
+write companionID mainInterface 0
+write types mainInterface 1
+write maxHealth mainInterface 2
+write companionLevel mainInterface 3
+fun have computeMaxExperience
+write expMax mainInterface 5
+fun have getMoveset
+write moveset mainInterface 6
+fun close
+
+fun new computeMaxExperience # companionLevel
+op pow component companionLevel 2.42
+op mul fourxlevel companionLevel 4
+op add expMax component fourxlevel
+op add expMax expMax 10
+op floor expMax expMax
+fun close
+
+fun new getMoveset # companionID, companionLevel
+op mul learnsetIndex companionID 3
+op add learnsetIndex learnsetIndex 96
+set lastMoveLevel 0
+for i = 0 < 9 1
+op mod movesetSlot i 4
+op mod learnsetSegmentMoveIndex i 3
+op idiv learnsetIndexShift i 3
+op add learnsetIndex' learnsetIndex learnsetIndexShift
+read learnsetSegment companionDatabase learnsetIndex'
+spl od learnsetMove LearnsetSegment learnsetSegmentMoveIndex
+spl of learnID LearnsetMove id
+spl of learnLevel LearnsetMove level
+jump latestReached greaterThan learnLevel companionLevel
+jump latestReached lessThan learnLevel lastMoveLevel
+set lastMoveLevel learnLevel
+spl wd learnID Moveset movesetSlot
+next
+latestReached:
+write moveset mainInterface 6
+fun close
+
+fun new startBattle
+write -1 touchInterfaceDisplay 59
+write -1 touchInterfaceDpad 59
+write 1 mainInterface 61
+waitForBattleToEnd:
+read battleStatus mainInterface 61
+jump waitForBattleToEnd equal battleStatus 1
+
+# aftermath
+read fightingCompanion renderInterface 43
+op mul statsIndex fightingCompanion 7
+op add healthIndex statsIndex 2
+op add statusIndex statsIndex 3
+read status renderInterface 21
+write status mainInterface statusIndex
+read health renderInterface 22
+write health mainInterface healthIndex
+fun close
+
+fun new cleanupBox
+for boxIndex < 60 2
+op add boxIndex+ boxIndex 1
+op add boxIndex++ boxIndex 2
+op add boxIndex+++ boxIndex 3
+read a companionBox boxIndex++
+read b companionBox boxIndex+++
+write a companionBox boxIndex
+write b companionBox boxIndex+
+next
+fun close
+
+fun new cleanupTeam
+for a = idIndex < 35 7
+op add b a 1
+op add c a 2
+op add d a 3
+op add e a 4
+op add f a 5
+op add g a 6
+op add a+ a 7
+op add b+ b 7
+op add c+ c 7
+op add d+ d 7
+op add e+ e 7
+op add f+ f 7
+op add g+ g 7
+read v mainInterface a+
+write v mainInterface a
+read v mainInterface b+
+write v mainInterface b
+read v mainInterface c+
+write v mainInterface c
+read v mainInterface d+
+write v mainInterface d
+read v mainInterface e+
+write v mainInterface e
+read v mainInterface f+
+write v mainInterface f
+read v mainInterface g+
+write v mainInterface g
+next
+fun close
+
+fun new notice
+draw color 0x00 0x00 0x00 255
+op add elementX inputX 0
+op add elementY inputY 1
+draw rect elementX elementY 10 12
+op add elementX inputX 1
+op add elementY inputY 0
+draw rect elementX elementY 8 14
+draw color 0xff 0xff 0xff 255
+op add elementY inputY 2
+draw rect elementX elementY 8 10
+op add elementX inputX 2
+op add elementY inputY 1
+draw rect elementX elementY 6 12
+draw color 0x00 0x00 0x00 255
+op add elementX inputX 4
+op add elementY inputY 3
+draw rect elementX elementY 2 2
+op add elementY inputY 6
+draw rect elementX elementY 2 5
+op add elementX inputX 3
+op add elementY inputY 7
+draw rect elementX elementY 4 3
+df display1
+fun close

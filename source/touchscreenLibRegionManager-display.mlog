@@ -1,0 +1,276 @@
+# touchscreenLibRegionManager-display.mlog
+
+spl new region Region 1:circular 1:click 1:hover
+spl new region RectangularRegion 1:circular 1:click 1:hover 8:x1 8:y1 8:x2 8:y2
+spl new region CircularRegion 1:circular 1:click 1:hover 8:x 8:y 8:r
+spl new color Color 8 * 4 0:r 1:g 2:b 3:a
+
+jump 0 equal display1 null
+jump 1 equal cell1 null
+set REGIONCOUNT_OFFSET 4
+write 3 cell1 3 # init default stroke size
+for i = REGIONCOUNT_OFFSET < 60 1
+write -1 cell1 i
+next
+sensor x display1 @x
+sensor y display1 @y
+sensor type display1 @type
+jump displayo2 equal type @large-logic-display
+op sub x x 1.25
+op sub y y 1.25
+jump loop always
+displayo2:
+op sub x x 2.75
+op sub y y 2.75
+
+loop:
+read clicked cell1 60
+jump notClicked equal clicked 0
+write 0 cell1 60
+notClicked:
+read sx cell1 61
+read sy cell1 62
+op sub dx sx x
+op mul dx dx 32
+op sub dy sy y
+op mul dy dy 32
+fun have analyzeRegions
+read needsUpdate cell1 0
+fun have update equal needsUpdate 1
+
+read regionIndex cell1 58
+fun have switchRegionSet > regionIndex -1
+jump loop always
+
+fun new analyzeRegions
+set hoverProcessed false
+set stateChange false
+set previousHoveredRegion currentHoveredRegion
+set previousSelectedRegion currentSelectedRegion
+set currentHoveredRegion 0
+jump sleepSelected equal clicked false
+set currentSelectedRegion 0
+sleepSelected:
+for i = REGIONCOUNT_OFFSET < regionCount 1
+read region cell1 i
+spl of unhoverable Region hover
+op sub hoverable 1 unhoverable
+op mul newRegion hoverable i
+fun have getRegionCoordinates
+fun have isWithinBounds
+jump processClickState equal hoverProcessed true
+jump previouslyHovering notEqual previousHoveredRegion 0
+
+# checking if this region is hovered
+jump changeHoveredRegion equal withinBounds true
+jump processClickState always
+
+# the previous hovered region exists:
+previouslyHovering:
+op equal sameRegion previousHoveredRegion i
+op land cursorStaysInRegion sameRegion withinBounds
+jump hoveringSameRegion equal cursorStaysInRegion 1 # don't change anything
+
+op sub anotherRegion 1 sameRegion
+op land cursorInAnotherRegion anotherRegion withinBounds
+jump changeHoveredRegion equal cursorInAnotherRegion 1 # switch regions
+jump processClickState always
+
+changeHoveredRegion:
+jump processClickState equal unhoverable true
+set currentHoveredRegion i
+fun have announceStateChange
+set hoverProcessed true
+jump processClickState always
+
+hoveringSameRegion:
+set currentHoveredRegion newRegion
+set hoverProcessed hoverable
+
+processClickState:
+# and we only need to work here if the user actually clicked
+jump output equal clicked false
+# are we clicking the same region as clicked before? only send another signal
+jump output equal withinBounds false
+jump sendClickSignal equal i previousSelectedRegion
+
+fun have announceStateChange
+
+sendClickSignal:
+spl of unselectable Region click
+jump noselect equal unselectable 1
+set currentSelectedRegion i
+noselect:
+op sub writeRegion i 4
+write writeRegion cell1 59
+
+output:
+next # close the loop and finalize
+
+jump noStateChangeNeededSelect equal clicked false
+jump noStateChangeNeededSelect notEqual currentSelectedRegion 0
+jump noStateChangeNeededSelect equal previousSelectedRegion 0
+
+fun have announceStateChange
+
+noStateChangeNeededSelect:
+jump noStateChangeNeededHover notEqual currentHoveredRegion 0
+jump noStateChangeNeededHover equal previousHoveredRegion 0
+
+fun have announceStateChange
+
+noStateChangeNeededHover:
+# finally give output!
+jump skipDraw equal stateChange false
+
+jump skipSelectFrame equal currentSelectedRegion 0
+read region cell1 currentSelectedRegion
+fun have getRegionCoordinates
+draw color rselect gselect bselect aselect
+jump drawCircularSelect equal circular 1
+op sub drawx x1 2
+op sub drawy y1 2
+op sub w x2 x1
+op sub h y2 y1
+op add w w 4
+op add h h 4
+draw lineRect drawx drawy w h
+jump finishDrawSelect always
+drawCircularSelect:
+op add r r 2
+draw linePoly x1 y1 69 r 0
+
+finishDrawSelect:
+skipSelectFrame:
+jump skipHoverFrame equal currentHoveredRegion 0
+read region cell1 currentHoveredRegion
+fun have getRegionCoordinates
+draw color rhover ghover bhover ahover
+jump drawCircularHover equal circular 1
+op sub drawx x1 4
+op sub drawy y1 4
+op sub w x2 x1
+op sub h y2 y1
+op add w w 8
+op add h h 8
+draw lineRect drawx drawy w h
+jump finishDrawHover always
+drawCircularHover:
+op add r r 4
+draw linePoly x1 y1 69 r 0
+
+finishDrawHover:
+skipHoverFrame:
+read ready cell1 63
+jump finishDrawHover notEqual ready 0
+df display1
+
+skipDraw:
+fun close
+
+fun new update
+set regionCount 0
+for i = REGIONCOUNT_OFFSET < 58 1
+read data cell1 i
+jump countBreak equal data -1
+op add regionCount regionCount 1
+next
+countBreak:
+op add regionCount regionCount REGIONCOUNT_OFFSET
+set currentHoveredRegion 0
+read color cell1 1
+spl of rselect Color r
+spl of gselect Color g
+spl of bselect Color b
+spl of aselect Color a
+read color cell1 2
+spl of rhover Color r
+spl of ghover Color g
+spl of bhover Color b
+spl of ahover Color a
+read strokeSize cell1 3
+draw stroke strokeSize
+write currentRegionIndex cell1 63
+write 0 cell1 0
+fun close
+
+fun new isWithinBounds
+# assumes that the variable "circular" is up to date
+jump circularProcedure equal circular 1
+jump notWithinBounds lessThan dx x1
+jump notWithinBounds greaterThan dx x2
+jump notWithinBounds lessThan dy y1
+jump notWithinBounds greaterThan dy y2
+set withinBounds true
+jump endIsWithinBounds always
+notWithinBounds:
+set withinBounds false
+jump endIsWithinBounds always
+circularProcedure:
+op sub testx dx x1
+op sub testy dy y1
+op len distance testx testy
+op lessThanEq withinBounds distance r
+endIsWithinBounds:
+fun close
+
+fun new announceStateChange
+set stateChange true
+write currentRegionIndex cell1 63
+fun close
+
+fun new getRegionCoordinates
+spl of circular Region circular
+jump getCircularCoordinates equal circular 1
+spl of x1 RectangularRegion x1
+spl of y1 RectangularRegion y1
+spl of x2 RectangularRegion x2
+spl of y2 RectangularRegion y2
+jump finishGetCoordinates
+getCircularCoordinates:
+spl of x1 CircularRegion x
+spl of y1 CircularRegion y
+spl of r CircularRegion r
+finishGetCoordinates:
+fun close
+
+fun new switchRegionSet
+op add currentRegionIndex regionIndex 1
+parr regionIndex
+# --- Nothing
+write -1 cell1 4
+/
+# --- Main Menu
+write 0x9B86BD2E cell1 2
+write 3 cell1 3
+write 0x54D442842 cell1 4
+write 0x3FD42D842 cell1 5
+write 0x2AD418842 cell1 6
+write 0x15D403842 cell1 7
+write -1 cell1 8
+/
+# --- Companion Index Tab
+write -1 cell1 4
+/
+# --- Companions Tab
+write -1 cell1 4
+/
+# --- About or Choose Starter
+write -1 cell1 4
+/
+# --- View Companion
+# write -1 cell1 4
+/
+# --- Companion Box Left Side
+write 0x6441AAE6 cell1 2
+write 2 cell1 3
+write 0x52143A042 cell1 4
+write 0x1E1406042 cell1 5
+write 0x8AC0C3 cell1 6
+write -1 cell1 7
+/
+# --- Learn Move Menu
+//
+write -1 cell1 58
+fun have update
+fun close

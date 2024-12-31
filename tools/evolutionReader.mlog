@@ -1,0 +1,231 @@
+spl new evo Evo 7:level 7:id
+
+set readFrom 384
+set companionID 0
+
+mainLoop:
+sensor sw switch1 @enabled
+fun have prev equal sw true
+sensor sw switch2 @enabled
+fun have next equal sw true
+fun have draw
+jump mainLoop
+
+fun new prev
+control enabled switch1 0
+op sub readFrom readFrom 1
+op sub companionID companionID 1
+op max readFrom readFrom 384
+op max companionID companionID 0
+fun close
+
+fun new next
+control enabled switch2 0
+op add readFrom readFrom 1
+op add companionID companionID 1
+op min readFrom readFrom 473
+op min companionID companionID 90
+fun close
+
+fun new draw
+draw clear 0 0 0
+draw color 255 255 255 255
+print "From: {0}\nTo: {1}\nAt: {2}"
+fun have getCompanionInfo
+read evo bank1 readFrom
+spl of level Evo level
+format companionNameShort
+set idstore companionID
+spl of companionID Evo id
+fun have getCompanionInfo
+format companionNameShort
+format level
+draw print 88 110 top
+df display1
+set companionID idstore
+fun close
+
+fun new getCompanionInfo
+op mul companionID' companionID 2
+op add @counter @counter companionID'
+set companionNameShort "Dagger"
+jump gotData
+set companionNameShort "Mace"
+jump gotData
+set companionNameShort "Fortress"
+jump gotData
+set companionNameShort "Nova"
+jump gotData
+set companionNameShort "Pulsar"
+jump gotData
+set companionNameShort "Quasar"
+jump gotData
+set companionNameShort "Crawler"
+jump gotData
+set companionNameShort "Atrax"
+jump gotData
+set companionNameShort "Spiroct"
+jump gotData
+set companionNameShort "Stell"
+jump gotData
+set companionNameShort "Locus"
+jump gotData
+set companionNameShort "Precept"
+jump gotData
+set companionNameShort "Merui"
+jump gotData
+set companionNameShort "Cleroi"
+jump gotData
+set companionNameShort "Anthicus"
+jump gotData
+set companionNameShort "Flare"
+jump gotData
+set companionNameShort "Horizon"
+jump gotData
+set companionNameShort "Zenith"
+jump gotData
+set companionNameShort "Mono"
+jump gotData
+set companionNameShort "Poly"
+jump gotData
+set companionNameShort "Mega"
+jump gotData
+set companionNameShort "Elude"
+jump gotData
+set companionNameShort "Avert"
+jump gotData
+set companionNameShort "Obviate"
+jump gotData
+set companionNameShort "Risso"
+jump gotData
+set companionNameShort "Minke"
+jump gotData
+set companionNameShort "Bryde"
+jump gotData
+set companionNameShort "Retusa"
+jump gotData
+set companionNameShort "Oxynoe"
+jump gotData
+set companionNameShort "Cyerce"
+jump gotData
+set companionNameShort "Co. Wall S"
+jump gotData
+set companionNameShort "Co. Wall L"
+jump gotData
+set companionNameShort "Ti. Wall S"
+jump gotData
+set companionNameShort "Ti. Wall L"
+jump gotData
+set companionNameShort "Pl. Wall S"
+jump gotData
+set companionNameShort "Pl. Wall L"
+jump gotData
+set companionNameShort "Th. Wall S"
+jump gotData
+set companionNameShort "Th. Wall L"
+jump gotData
+set companionNameShort "Ph. Wall S"
+jump gotData
+set companionNameShort "Ph. Wall L"
+jump gotData
+set companionNameShort "Su. Wall S"
+jump gotData
+set companionNameShort "Su. Wall L"
+jump gotData
+set companionNameShort "Door S"
+jump gotData
+set companionNameShort "Door L"
+jump gotData
+set companionNameShort "Conveyor"
+jump gotData
+set companionNameShort "Ti. Conveyor"
+jump gotData
+set companionNameShort "Ar. Conveyor"
+jump gotData
+set companionNameShort "Conduit"
+jump gotData
+set companionNameShort "Pu. Conduit"
+jump gotData
+set companionNameShort "Pl. Conduit"
+jump gotData
+set companionNameShort "Router"
+jump gotData
+set companionNameShort "Distributor"
+jump gotData
+set companionNameShort "Container"
+jump gotData
+set companionNameShort "Vault"
+jump gotData
+set companionNameShort "Liq. Contai."
+jump gotData
+set companionNameShort "Liq. Tank"
+jump gotData
+set companionNameShort "Micro Proc."
+jump gotData
+set companionNameShort "Logic Proc."
+jump gotData
+set companionNameShort "Hyper Proc."
+jump gotData
+set companionNameShort "Shard"
+jump gotData
+set companionNameShort "Foundation"
+jump gotData
+set companionNameShort "Nucleus"
+jump gotData
+set companionNameShort "Bastion"
+jump gotData
+set companionNameShort "Citadel"
+jump gotData
+set companionNameShort "Acropolis"
+jump gotData
+set companionNameShort "Alpha"
+jump gotData
+set companionNameShort "Beta"
+jump gotData
+set companionNameShort "Gamma"
+jump gotData
+set companionNameShort "Evoke"
+jump gotData
+set companionNameShort "Incite"
+jump gotData
+set companionNameShort "Emanate"
+jump gotData
+set companionNameShort "Elec. Heater"
+jump gotData
+set companionNameShort "Slag Heater"
+jump gotData
+set companionNameShort "Phase Heater"
+jump gotData
+set companionNameShort "Force Proj."
+jump gotData
+set companionNameShort "Duo"
+jump gotData
+set companionNameShort "Salvo"
+jump gotData
+set companionNameShort "Spectre"
+jump gotData
+set companionNameShort "Arc"
+jump gotData
+set companionNameShort "Lancer"
+jump gotData
+set companionNameShort "Meltdown"
+jump gotData
+set companionNameShort "Wave"
+jump gotData
+set companionNameShort "Tsunami"
+jump gotData
+set companionNameShort "Parallax"
+jump gotData
+set companionNameShort "Reign"
+jump gotData
+set companionNameShort "Corvus"
+jump gotData
+set companionNameShort "Toxopid"
+jump gotData
+set companionNameShort "Eclipse"
+jump gotData
+set companionNameShort "Oct"
+jump gotData
+set companionNameShort "World Proc."
+gotData:
+fun close

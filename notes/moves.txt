@@ -1,0 +1,593 @@
+Manipulate:
+	Type: Logic
+	Effect 1:
+		Effect: PriorityElectricAttack
+		Effect Value: 20
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: 0
+		Effect Value: 0
+		Effect Accuracy: 0
+
+Disable:
+	Type: Logic
+	Effect 1:
+		Effect: ApplyElectrified
+		Effect Value: 0
+		Effect Accuracy: 95
+	Effect 2:
+		Effect: 0
+		Effect Value: 0
+		Effect Accuracy: 0
+
+RCE:
+	Type: Logic
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 30
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: ElectricAttack
+		Effect Value: 30
+		Effect Accuracy: 80
+
+Remote Shutdown:
+	Type: Logic
+	Effect 1:
+		Effect: ElectricAttack
+		Effect Value: 75
+		Effect Accuracy: 85
+	Effect 2:
+		Effect: ApplyMelting
+		Effect Value: 0
+		Effect Accuracy: 50
+
+Kinesis:
+	Type: Logic
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 65
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: 0
+		Effect Value: 0
+		Effect Accuracy: 0
+
+Single Shot:
+	Type: Offense
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 35
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: 0
+		Effect Value: 0
+		Effect Accuracy: 0
+
+Double Shot:
+	Type: Offense
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 25
+		Effect Accuracy: 85
+	Effect 2:
+		Effect: PhysicalAttack
+		Effect Value: 25
+		Effect Accuracy: 85
+
+Full Round:
+	Type: Offense
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 30
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: PhysicalAttack
+		Effect Value: 30
+		Effect Accuracy: 75
+
+Ground Missile:
+	Type: Offense
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 60
+		Effect Accuracy: 50
+	Effect 2:
+		Effect: ApplyMelting
+		Effect Value: 0
+		Effect Accuracy: 100
+
+Turret Guns:
+	Type: Defense
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 35
+		Effect Accuracy: 95
+	Effect 2:
+		Effect: PhysicalAttack
+		Effect Value: 5
+		Effect Accuracy: 50
+
+Disrupting Round:
+	Type: Defense
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 20
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: ApplyElectrified
+		Effect Value: 0
+		Effect Accuracy: 40
+
+Intercept:
+	Type: Defense
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 25
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: ElectricAttack
+		Effect Value: 25
+		Effect Accuracy: 100
+
+Blitz:
+	Type: Normal
+	Effect 1:
+		Effect: PriorityPhysicalAttack
+		Effect Value: 20
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: 0
+		Effect Value: 0
+		Effect Accuracy: 0
+
+Collide:
+	Type: Normal
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 40
+		Effect Accuracy: 70
+	Effect 2:
+		Effect: ApplyElectrified
+		Effect Value: 0
+		Effect Accuracy: 30
+
+Bludgeon:
+	Type: Normal
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 50
+		Effect Accuracy: 80
+	Effect 2:
+		Effect: 0
+		Effect Value: 0
+		Effect Accuracy: 0
+
+Normal Beam:
+	Type: Normal
+	Effect 1:
+		Effect: ElectricAttack
+		Effect Value: 45
+		Effect Accuracy: 90
+	Effect 2:
+		Effect: 0
+		Effect Value: 0
+		Effect Accuracy: 0
+
+Paralyzing Beam:
+	Type: Support
+	Effect 1:
+		Effect: ElectricAttack
+		Effect Value: 10
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: ApplyElectrified
+		Effect Value: 0
+		Effect Accuracy: 100
+
+Pick and Drop:
+	Type: Support
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 60
+		Effect Accuracy: 70
+	Effect 2:
+		Effect: 0
+		Effect Value: 0
+		Effect Accuracy: 0
+
+Ionized Fire:
+	Type: Fire
+	Effect 1:
+		Effect: ElectricAttack
+		Effect Value: 50
+		Effect Accuracy: 85
+	Effect 2:
+		Effect: 0
+		Effect Value: 0
+		Effect Accuracy: 0
+
+Throw Slag: ----- give this to a mapcompanion or two, it has seen little usage
+	Type: Fire
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 20
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: ApplyMelting
+		Effect Value: 0
+		Effect Accuracy: 75
+
+Melt:
+	Type: Fire
+	Effect 1:
+		Effect: ApplyMelting
+		Effect Value: 0
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: 0
+		Effect Value: 0
+		Effect Accuracy: 0
+
+Oil Bomb:
+	Type: Fire
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 70
+		Effect Accuracy: 70
+	Effect 2:
+		Effect: ApplyMelting
+		Effect Value: 0
+		Effect Accuracy: 30
+
+Water Gun:
+	Type: Water
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 20
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: PhysicalAttack
+		Effect Value: 20
+		Effect Accuracy: 75
+
+Charged Scald:
+	Type: Water
+	Effect 1:
+		Effect: ElectricAttack
+		Effect Value: 60
+		Effect Accuracy: 80
+	Effect 2:
+		Effect: 0
+		Effect Value: 0
+		Effect Accuracy: 0
+
+Pressure Wash:
+	Type: Water
+	Effect 1:
+		Effect: PriorityPhysicalAttack
+		Effect Value: 25
+		Effect Accuracy: 90
+	Effect 2:
+		Effect: 0
+		Effect Value: 0
+		Effect Accuracy: 0
+
+Mortar Fire:
+	Type: Artillery
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 50
+		Effect Accuracy: 80
+	Effect 2:
+		Effect: 0
+		Effect Value: 0
+		Effect Accuracy: 0
+
+Long Distance Shells:
+	Type: Artillery
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 25
+		Effect Accuracy: 90
+	Effect 2:
+		Effect: PhysicalAttack
+		Effect Value: 25
+		Effect Accuracy: 75
+
+Zap:
+	Type: Energy
+	Effect 1:
+		Effect: ElectricAttack
+		Effect Value: 35
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: 0
+		Effect Value: 0
+		Effect Accuracy: 0
+
+Stun Gun:
+	Type: Energy
+	Effect 1:
+		Effect: ElectricAttack
+		Effect Value: 40
+		Effect Accuracy: 65
+	Effect 2:
+		Effect: ApplyElectrified
+		Effect Value: 0
+		Effect Accuracy: 100
+
+Energy Blades:
+	Type: Energy
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 20
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: PhysicalAttack
+		Effect Value: 30
+		Effect Accuracy: 75
+
+EMP Shell: -------- give to mapcompanions too
+	Type: Energy
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 15
+		Effect Accuracy: 85
+	Effect 2:
+		Effect: ApplyElectrified
+		Effect Value: 0
+		Effect Accuracy: 100
+
+Convey:
+	Type: Industry
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 35
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: 0
+		Effect Value: 0
+		Effect Accuracy: 0
+
+Spill:
+	Type: Industry
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 10
+		Effect Accuracy: 95
+	Effect 2:
+		Effect: ElectricAttack
+		Effect Value: 30
+		Effect Accuracy: 95
+
+Distribute:
+	Type: Industry
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 20
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: ElectricAttack
+		Effect Value: 20
+		Effect Accuracy: 100
+
+Blast Bomb: ----------- do a horizon mapcompanion with this!!
+	Type: Industry
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 100
+		Effect Accuracy: 50
+	Effect 2:
+		Effect: 0
+		Effect Value: 0
+		Effect Accuracy: 0
+
+Landmine:
+	Type: Ground
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 40
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: 0
+		Effect Value: 0
+		Effect Accuracy: 0
+
+Bulldoze:
+	Type: Ground
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 60
+		Effect Accuracy: 90
+	Effect 2:
+		Effect: 0
+		Effect Value: 0
+		Effect Accuracy: 0
+
+Shield Slam:
+	Type: Support
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 75
+		Effect Accuracy: 85
+	Effect 2:
+		Effect: 0
+		Effect Value: 0
+		Effect Accuracy: 0
+
+All Weapons:
+	Type: Offense
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 45
+		Effect Accuracy: 75
+	Effect 2:
+		Effect: ElectricAttack
+		Effect Value: 45
+		Effect Accuracy: 100
+
+Corrupt Systems:
+	Type: Logic
+	Effect 1:
+		Effect: ElectricAttack
+		Effect Value: 60
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: ApplyElectrified
+		Effect Value: 0
+		Effect Accuracy: 30
+
+Magnetic Waves:
+	Type: Force
+	Effect 1:
+		Effect: PriorityElectricAttack
+		Effect Value: 50
+		Effect Accuracy: 75
+	Effect 2:
+		Effect: 0
+		Effect Value: 0 
+		Effect Accuracy: 0
+
+Reactive Shell:
+	Type: Defense
+	Effect 1:
+		Effect: PriorityPhysicalAttack
+		Effect Value: 50
+		Effect Accuracy: 95
+	Effect 2:
+		Effect: 0
+		Effect Value: 0
+		Effect Accuracy: 0
+
+Overheat:
+	Type: Fire
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 60
+		Effect Accuracy: 90
+	Effect 2:
+		Effect: ApplyMelting
+		Effect Value: 0
+		Effect Accuracy: 20
+
+Flood:
+	Type: Water
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 20
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: PhysicalAttack
+		Effect Value: 70
+		Effect Accuracy: 60
+
+Energy Geyser:
+	Type: Energy
+	Effect 1:
+		Effect: ElectricAttack
+		Effect Value: 60
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: 0
+		Effect Value: 0
+		Effect Accuracy: 0
+
+Replicate Swarm:
+	Type: Core
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 45
+		Effect Accuracy: 95
+	Effect 2:
+		Effect: PhysicalAttack
+		Effect Value: 35
+		Effect Accuracy: 95
+
+Replicate Pulse:
+	Type: Core
+	Effect 1:
+		Effect: ElectricAttack
+		Effect Value: 45
+		Effect Accuracy: 95
+	Effect 2:
+		Effect: ElectricAttack
+		Effect Value: 35
+		Effect Accuracy: 95
+
+Duplex Storm:
+	Type: Core
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 28
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: ElectricAttack
+		Effect Value: 28
+		Effect Accuracy: 100
+
+Imported Blast:
+	Type: Core
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 40
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: 0
+		Effect Value: 0
+		Effect Accuracy: 0
+
+Scatter Bombs:
+	Type: Air
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 40
+		Effect Accuracy: 95
+	Effect 2:
+		Effect: PhysicalAttack
+		Effect Value: 30
+		Effect Accuracy: 90
+
+Hyper Pulse:
+	Type: Support
+	Effect 1:
+		Effect: ElectricAttack
+		Effect Value: 70
+		Effect Accuracy: 90
+	Effect 2:
+		Effect: ApplyElectrified
+		Effect Value: 0
+		Effect Accuracy: 15
+
+Napalm Shell:
+	Type: Artillery
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 60
+		Effect Accuracy: 95
+	Effect 2:
+		Effect: ApplyMelting
+		Effect Value: 0
+		Effect Accuracy: 10
+
+Earthquake:
+	Type: Ground
+	Effect 1:
+		Effect: PhysicalAttack
+		Effect Value: 50
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: PhysicalAttack
+		Effect Value: 15
+		Effect Accuracy: 90
+
+Laser Cannon:
+	Type: Energy
+	Effect 1:
+		Effect: PriorityElectricAttack
+		Effect Value: 25
+		Effect Accuracy: 100
+	Effect 2:
+		Effect: ElectricAttack
+		Effect Value: 20
+		Effect Accuracy: 90

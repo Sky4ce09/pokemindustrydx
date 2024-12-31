@@ -1,0 +1,896 @@
+# touchscreenLibGraphics-dpad.mlog
+
+set track 2
+
+start:
+read update cell1 63
+jump start lessThanEq update 0
+op sub gg update 1
+
+parr gg
+# --- Do Things In The World Map
+draw clear 0 0 0 0 0 0
+draw color 50 30 150 255 0 0
+draw rect 60 2 56 50 0 0
+draw rect 60 124 56 50 0 0
+draw rect 2 60 50 56 0 0
+draw rect 124 60 50 56 0 0
+draw color 150 70 50 155 0 0
+draw poly 88 88 90 35 15 0
+draw color 150 70 50 255 0 0
+draw poly 88 88 90 31 15 0
+draw color 70 150 90 155 0 0
+draw poly 147 147 90 29 15 0
+draw color 70 150 90 255 0 0
+draw poly 147 147 90 25 15 0
+draw color 230 220 80 255 0 0
+draw triangle 134 64 168 88 134 112
+draw triangle 42 64 8 88 42 112
+draw triangle 64 134 88 168 112 134
+draw triangle 64 42 88 8 112 42
+draw color 255 255 255 255
+print "Interact"
+draw print 88 90 center 0 0 0
+print "Menu"
+draw print 147 149 center 0 0 0
+/
+# --- Choose Starter
+draw clear 0 0 0 0 0 0
+draw color 255 255 255 255 0 0
+draw image 53 65 @dagger 40 0 0
+draw image 123 65 @stell 40 0 0
+draw color 240 210 60 255 0 0
+print "Choose a starter"
+draw print 88 164 center 255 0 0
+print "companion"
+draw print 88 153 center 255 0 0
+draw color 255 255 255 255 0 0
+print "Dagger"
+draw print 53 105 center 255 0 0
+print "Types:"
+draw print 53 35 center 255 0 0
+print "Normal"
+draw print 53 24 center 255 0 0
+print "Offense"
+draw print 53 13 center 255 0 0
+print "Stell"
+draw print 123 105 center 255 0 0
+print "Types:"
+draw print 123 35 center 255 0 0
+print "Normal"
+draw print 123 24 center 255 0 0
+print "Defense"
+draw print 123 13 center 255 0 0
+/
+# --- Up Down Cancel Select
+draw clear 0 0 0 0 0 0
+draw color 50 30 150 255 0 0
+draw rect 8 8 74 74 0 0
+draw rect 8 94 74 74 0 0
+draw color 150 70 50 155 0 0
+draw poly 131 45 90 37 0 0
+draw color 150 70 50 255 0 0
+draw poly 131 45 90 33 0 0
+draw color 70 150 90 155 0 0
+draw poly 131 131 90 37 0 0
+draw color 70 150 90 255 0 0
+draw poly 131 131 90 33 0 0
+draw color 230 220 80 255 0 0
+draw triangle 16 78 45 12 74 78
+draw triangle 16 98 45 164 74 98
+draw color 50 30 150 255 0 0
+draw triangle 16 78 45 68 74 78
+draw triangle 16 98 45 108 74 98
+draw color 255 255 255 255 0 0
+print "Cancel"
+draw print 131 47 center 255 0 0
+print "Select"
+draw print 131 133 center 255 0 0
+/
+# --- Companion Index / Companion View Navigation
+draw clear 0 0 0 0 0 0
+draw color 50 30 150 255 0 0
+draw rect 8 72 72 72 0 0
+draw rect 96 72 72 72 0 0
+draw color 230 220 80 255 0 0
+draw triangle 107 80 161 108 107 136
+draw triangle 69 80 15 108 69 136
+draw color 50 30 150 255 0 0
+draw triangle 107 80 114 108 107 136
+draw triangle 69 80 62 108 69 136
+draw color 32 32 32 255 0 0
+draw rect 8 12 160 36 0 0
+draw color 48 48 48 255 0 0
+draw rect 12 16 152 28 0 0
+draw color 255 255 255 255 0 0
+print "Back"
+draw print 88 32 center 0 0 0
+/
+# --- Companion Management
+draw clear 0 0 0 0 0 0
+draw color 50 30 150 255 0 0
+draw rect 8 8 74 74 0 0
+draw rect 8 94 74 74 0 0
+draw color 32 32 32 255
+draw rect 88 124 80 36
+draw rect 88 70 80 36
+draw rect 88 16 80 36
+draw color 48 48 48 255
+draw rect 92 128 72 28
+draw rect 92 74 72 28
+draw rect 92 20 72 28
+draw color 230 220 80 255 0 0
+draw triangle 16 78 45 12 74 78
+draw triangle 16 98 45 164 74 98
+draw color 50 30 150 255 0 0
+draw triangle 16 78 45 68 74 78
+draw triangle 16 98 45 108 74 98
+draw color 255 255 255 255 0 0
+print "View"
+draw print 128 144 center 255 0 0
+print "Swap"
+draw print 128 90 center 255 0 0
+print "Back"
+draw print 128 36 center 255 0 0
+/
+# --- About Back Button
+draw clear 0 0 0 0 0 0
+draw color 32 32 32 255
+draw rect 8 70 160 36
+draw color 48 48 48 255
+draw rect 12 74 152 28
+draw color 255 255 255 255
+print "Back"
+draw print 88 90 center
+/
+# --- Companion Box UI Right Side
+draw clear 0 0 0 0 0 0
+draw color 48 48 48 255 0 0
+draw rect 0 0 128 176 0 0
+draw color 50 30 150 255 0 0
+draw rect 136 116 32 48 0 0
+draw rect 136 12 32 48 0 0
+draw color 230 220 80 255 0 0
+draw triangle 140 120 152 160 164 120
+draw triangle 140 56 152 16 164 56
+draw color 150 70 50 155 0 0
+draw poly 152 88 90 20 0 56
+draw color 150 70 50 255 0 0
+draw poly 152 88 90 17 0 56
+draw color 255 255 255 255
+print "Back"
+draw print 152 90 center
+
+read companionCount cell2 42
+op sub maxTrack companionCount 2
+read highlight cell2 63
+op sub test highlight 2
+jump dontAdjust1 greaterThanEq track test
+set track test
+dontAdjust1:
+op add test highlight 2
+jump dontAdjust2 lessThanEq track test
+set track test
+dontAdjust2:
+op min track track maxTrack
+op max track track 2 # NEVER lower than 2!
+op sub start track 2
+op max start start 0
+op add finish track 2
+op min finish finish companionCount
+set drawShift 0
+for start <= finish 1
+op mul drawY drawShift 32
+op sub drawY 140 drawY
+draw color 32 32 32 255
+draw rect 8 drawY 112 24
+jump boxSkipHighlight notEqual start highlight
+draw color 255 255 0 60
+draw rect 8 drawY 112 24
+boxSkipHighlight:
+draw color 255 255 255 255
+jump handleFreeSlot equal start companionCount
+op add textY1 drawY 20
+op add textY2 drawY 8
+op mul readFrom start 7
+read companionID cell2 readFrom
+op add readFrom readFrom 3
+read companionLevel cell2 readFrom
+op mod companionLevel companionLevel 0b10000000
+fun have getCompanionInfo
+print companionName
+draw print 64 textY1 center
+print "Level: "
+print companionLevel
+draw print 64 textY2 center
+jump listNextCompanion
+handleFreeSlot:
+op add textY drawY 14
+print "<empty slot>"
+draw print 64 textY center
+listNextCompanion:
+op add drawShift drawShift 1
+next
+/
+# --- Battle Main Menu
+draw clear 0 0 0 0 0 0
+draw color 32 32 32 255 0 0
+draw rect 8 133 160 36 0 0
+draw rect 8 91 160 36 0 0
+draw rect 8 49 160 36 0 0
+draw rect 8 7 160 36 0 0
+draw color 48 48 48 255 0 0
+draw rect 12 137 152 28 0 0
+draw rect 12 95 152 28 0 0
+draw rect 12 53 152 28 0 0
+draw rect 12 11 152 28 0 0
+draw color 255 255 255 255 0 0
+print "Use Move"
+draw print 88 153 center 36 0 0
+print "Companions"
+draw print 88 111 center 36 0 0
+read battleType cell3 18
+jump trainerBattle equal battleType 2
+print "Catch"
+draw print 88 69 center 36 0 0
+print "Flee"
+draw print 88 27 center 36 0 0
+jump finishDrawingMainBattleScreen
+trainerBattle:
+print "<can't catch>"
+draw print 88 69 center 36 0 0
+print "<can't flee>"
+draw print 88 27 center 36 0 0
+finishDrawingMainBattleScreen:
+/
+# --- Battle Move Selection
+set inBattle true
+moveSelection:
+draw clear 0 0 0 0 0 0
+draw color 32 32 32 255
+draw rect 8 137 160 32
+draw rect 8 100 160 32
+draw rect 8 63 160 32
+draw rect 8 26 160 32
+draw rect 8 7 160 12
+draw color 48 48 48 255
+draw rect 12 141 152 24
+draw rect 12 104 152 24
+draw rect 12 66 152 24
+draw rect 12 30 152 24
+draw color 255 255 255 255
+set drawY 49
+set drawY' 37
+
+spl new moveset Moveset 7 * 4
+parr inBattle
+print "Don't learn"
+draw print 88 15 center
+read companionIndex cell3 51
+op mul companionIDIndex companionIndex 7
+op add companionMovesIndex companionIDIndex 6
+read moveset cell2 companionMovesIndex
+for i = 3 >= 0 -1
+spl od moveID Moveset i
+fun have getMoveInfo
+print moveName
+draw print 88 drawY center
+print moveType
+draw print 88 drawY' center
+op add drawY drawY 37
+op add drawY' drawY' 37
+next
+/
+print "Back"
+draw print 88 15 center
+for moveSlot = 26 >= 23 -1
+read moveID cell3 moveSlot
+fun have getMoveInfo
+print moveName
+draw print 88 drawY center
+print moveType
+draw print 88 drawY' center
+op add drawY drawY 37
+op add drawY' drawY' 37
+next
+//
+/
+# --- Battle Switching
+draw clear 0 0 0 0 0 0
+battleSwitching:
+draw clear 48 48 48
+draw color 32 32 32 255
+draw rect 5 129 80 36
+draw rect 91 129 80 36
+draw rect 5 88 80 36
+draw rect 91 88 80 36
+draw rect 5 47 80 36
+draw rect 91 47 80 36
+jump forcedSwitch equal gg 10
+draw rect 5 7 166 30
+draw color 255 255 255 255
+print "Back"
+draw print 88 23 center
+forcedSwitch:
+read companionCount cell2 42
+for i = 0 < companionCount 1
+op mod drawX i 2
+op mul drawX drawX 86
+op add drawX drawX 45
+op idiv drawY i 2
+op mul drawY drawY -41
+op add drawY drawY 149
+op sub drawX- drawX 39
+op add drawX+ drawX 39
+op sub drawY- drawY 12
+op add drawY+ drawY 12
+op mul companionIDIndex i 7
+op add companionHealthIndex companionIDIndex 2
+op add companionLevelAndStatusIndex companionIDIndex 3
+read companionID cell2 companionIDIndex
+read companionHealth cell2 companionHealthIndex
+read companionLevelAndStatus cell2 companionLevelAndStatusIndex
+op mod health companionHealth 0b10000000000
+op idiv maxHealth companionHealth 0b10000000000
+op mod level companionLevelAndStatus 0b10000000
+op idiv status companionLevelAndStatus 0b10000000
+fun have getCompanionInfo
+draw color 255 255 255 255
+print companionName
+draw print drawX drawY+ center
+print "Lv"
+print level
+draw print drawX- drawY left
+print health
+print "/"
+print maxHealth
+draw print drawX drawY- center
+fun have printStatus
+draw print drawX+ drawY right
+next
+/
+jump battleSwitching
+/
+# --- Turn Report
+/
+# --- Heal Message
+draw clear 0 0 0 0 0 0
+draw color 255 255 255 255 0 0
+print "Your companions have"
+draw print 88 156 center 0 0 0
+print "been healed."
+draw print 88 144 center 0 0 0
+draw color 180 155 90 255
+print "Click to proceed"
+draw print 88 15 bottom
+/
+# --- Learn Move Menu
+set inBattle false
+jump moveSelection
+/
+# --- Evolution Menu
+draw clear 0 0 0
+draw color 32 32 32 255 0 0
+draw rect 8 49 160 36 0 0
+draw rect 8 7 160 36 0 0
+draw color 48 48 48 255 0 0
+draw rect 12 53 152 28 0 0
+draw rect 12 11 152 28 0 0
+draw color 255 255 255 255
+read companionID cell3 51
+fun have getCompanionInfo
+print companionName
+draw print 88 156 center
+read companionID cell3 52
+fun have getCompanionInfo
+print "wants to evolve into"
+draw print 88 139 center
+print companionName
+draw print 88 122 center
+print "Evolve"
+draw print 88 69 center
+print "Don't evolve"
+draw print 88 27 center
+//
+
+drawflush display1
+write 0 cell1 63
+jump start
+
+fun new printStatus
+jump fainted equal health 0
+parr status
+draw color 255 255 255 255
+print "OK"
+/
+draw color 255 255 135 255
+print "ELC"
+/
+draw color 255 135 135 255
+print "MLT"
+/
+fainted:
+draw color 135 135 135 255
+print "FNT"
+//
+fun close
+
+fun new getCompanionInfo
+op mul companionID' companionID 3
+op add @counter @counter companionID'
+set companionName "Dagger"
+set companionSprite @dagger
+jump gotData
+set companionName "Mace"
+set companionSprite @mace
+jump gotData
+set companionName "Fortress"
+set companionSprite @fortress
+jump gotData
+set companionName "Nova"
+set companionSprite @nova
+jump gotData
+set companionName "Pulsar"
+set companionSprite @pulsar
+jump gotData
+set companionName "Quasar"
+set companionSprite @quasar
+jump gotData
+set companionName "Crawler"
+set companionSprite @crawler
+jump gotData
+set companionName "Atrax"
+set companionSprite @atrax
+jump gotData
+set companionName "Spiroct"
+set companionSprite @spiroct
+jump gotData
+set companionName "Stell"
+set companionSprite @stell
+jump gotData
+set companionName "Locus"
+set companionSprite @locus
+jump gotData
+set companionName "Precept"
+set companionSprite @precept
+jump gotData
+set companionName "Merui"
+set companionSprite @merui
+jump gotData
+set companionName "Cleroi"
+set companionSprite @cleroi
+jump gotData
+set companionName "Anthicus"
+set companionSprite @anthicus
+jump gotData
+set companionName "Flare"
+set companionSprite @flare
+jump gotData
+set companionName "Horizon"
+set companionSprite @horizon
+jump gotData
+set companionName "Zenith"
+set companionSprite @zenith
+jump gotData
+set companionName "Mono"
+set companionSprite @mono
+jump gotData
+set companionName "Poly"
+set companionSprite @poly
+jump gotData
+set companionName "Mega"
+set companionSprite @mega
+jump gotData
+set companionName "Elude"
+set companionSprite @elude
+jump gotData
+set companionName "Avert"
+set companionSprite @avert
+jump gotData
+set companionName "Obviate"
+set companionSprite @obviate
+jump gotData
+set companionName "Risso"
+set companionSprite @risso
+jump gotData
+set companionName "Minke"
+set companionSprite @minke
+jump gotData
+set companionName "Bryde"
+set companionSprite @bryde
+jump gotData
+set companionName "Retusa"
+set companionSprite @retusa
+jump gotData
+set companionName "Oxynoe"
+set companionSprite @oxynoe
+jump gotData
+set companionName "Cyerce"
+set companionSprite @cyerce
+jump gotData
+set companionName "Co. Wall S"
+set companionSprite @copper-wall
+jump gotData
+set companionName "Co. Wall L"
+set companionSprite @copper-wall-large
+jump gotData
+set companionName "Ti. Wall S"
+set companionSprite @titanium-wall
+jump gotData
+set companionName "Ti. Wall L"
+set companionSprite @titanium-wall-large
+jump gotData
+set companionName "Pl. Wall S"
+set companionSprite @plastanium-wall
+jump gotData
+set companionName "Pl. Wall L"
+set companionSprite @plastanium-wall-large
+jump gotData
+set companionName "Th. Wall S"
+set companionSprite @thorium-wall
+jump gotData
+set companionName "Th. Wall L"
+set companionSprite @thorium-wall-large
+jump gotData
+set companionName "Ph. Wall S"
+set companionSprite @phase-wall
+jump gotData
+set companionName "Ph. Wall L"
+set companionSprite @phase-wall-large
+jump gotData
+set companionName "Su. Wall S"
+set companionSprite @surge-wall
+jump gotData
+set companionName "Su. Wall L"
+set companionSprite @surge-wall-large
+jump gotData
+set companionName "Door S"
+set companionSprite @door
+jump gotData
+set companionName "Door L"
+set companionSprite @door-large
+jump gotData
+set companionName "Conveyor"
+set companionSprite @conveyor
+jump gotData
+set companionName "Ti. Conveyor"
+set companionSprite @titanium-conveyor
+jump gotData
+set companionName "Ar. Conveyor"
+set companionSprite @armored-conveyor
+jump gotData
+set companionName "Conduit"
+set companionSprite @conduit
+jump gotData
+set companionName "Pu. Conduit"
+set companionSprite @pulse-conduit
+jump gotData
+set companionName "Pl. Conduit"
+set companionSprite @plated-conduit
+jump gotData
+set companionName "Router"
+set companionSprite @router
+jump gotData
+set companionName "Distributor"
+set companionSprite @distributor
+jump gotData
+set companionName "Container"
+set companionSprite @container
+jump gotData
+set companionName "Vault"
+set companionSprite @vault
+jump gotData
+set companionName "Liq. Contai."
+set companionSprite @liquid-container
+jump gotData
+set companionName "Liq. Tank"
+set companionSprite @liquid-tank
+jump gotData
+set companionName "Micro Proc."
+set companionSprite @micro-processor
+jump gotData
+set companionName "Logic Proc."
+set companionSprite @logic-processor
+jump gotData
+set companionName "Hyper Proc."
+set companionSprite @hyper-processor
+jump gotData
+set companionName "Shard"
+set companionSprite @core-shard
+jump gotData
+set companionName "Foundation"
+set companionSprite @core-foundation
+jump gotData
+set companionName "Nucleus"
+set companionSprite @core-nucleus
+jump gotData
+set companionName "Bastion"
+set companionSprite @core-bastion
+jump gotData
+set companionName "Citadel"
+set companionSprite @core-citadel
+jump gotData
+set companionName "Acropolis"
+set companionSprite @core-acropolis
+jump gotData
+set companionName "Alpha"
+set companionSprite @alpha
+jump gotData
+set companionName "Beta"
+set companionSprite @beta
+jump gotData
+set companionName "Gamma"
+set companionSprite @gamma
+jump gotData
+set companionName "Evoke"
+set companionSprite @evoke
+jump gotData
+set companionName "Incite"
+set companionSprite @incite
+jump gotData
+set companionName "Emanate"
+set companionSprite @emanate
+jump gotData
+set companionName "El. Heater"
+set companionSprite @electric-heater
+jump gotData
+set companionName "Slag Heater"
+set companionSprite @slag-heater
+jump gotData
+set companionName "Phase Heater"
+set companionSprite @phase-heater
+jump gotData
+set companionName "Force Proj."
+set companionSprite @force-projector
+jump gotData
+set companionName "Duo"
+set companionSprite @duo
+jump gotData
+set companionName "Salvo"
+set companionSprite @salvo
+jump gotData
+set companionName "Spectre"
+set companionSprite @spectre
+jump gotData
+set companionName "Arc"
+set companionSprite @arc
+jump gotData
+set companionName "Lancer"
+set companionSprite @lancer
+jump gotData
+set companionName "Meltdown"
+set companionSprite @meltdown
+jump gotData
+set companionName "Wave"
+set companionSprite @wave
+jump gotData
+set companionName "Tsunami"
+set companionSprite @tsunami
+jump gotData
+set companionName "Parallax"
+set companionSprite @parallax
+jump gotData
+set companionName "Reign"
+set companionSprite @reign
+jump gotData
+set companionName "Corvus"
+set companionSprite @corvus
+jump gotData
+set companionName "Toxopid"
+set companionSprite @toxopid
+jump gotData
+set companionName "Eclipse"
+set companionSprite @eclipse
+jump gotData
+set companionName "Oct"
+set companionSprite @oct
+jump gotData
+set companionName "World Proc."
+set companionSprite @world-processor
+gotData:
+fun close
+
+fun new getTypeInfo
+op mul companionType' companionType 2
+op add @counter @counter companionType'
+set typeName "How?"
+jump gotInfo
+set typeName "Offense"
+jump gotInfo
+set typeName "Support"
+jump gotInfo
+set typeName "Defense"
+jump gotInfo
+set typeName "Logic"
+jump gotInfo
+set typeName "Fire"
+jump gotInfo
+set typeName "Water"
+jump gotInfo
+set typeName "Artillery"
+jump gotInfo
+set typeName "Energy"
+jump gotInfo
+set typeName "Core"
+jump gotInfo
+set typeName "Industry"
+jump gotInfo
+set typeName "Force"
+jump gotInfo
+set typeName "Normal"
+jump gotInfo
+set typeName "Ground"
+jump gotInfo
+set typeName "Air"
+gotInfo:
+fun close
+
+fun new getMoveInfo
+op mul moveID' moveID 3
+op add @counter @counter moveID'
+set moveName "<empty slot>"
+set moveType "<no type>"
+jump gotMove
+set moveName "Manipulate"
+set moveType "Logic"
+jump gotMove
+set moveName "Disable"
+set moveType "Logic"
+jump gotMove
+set moveName "RCE"
+set moveType "Logic"
+jump gotMove
+set moveName "Remote Shutdown"
+set moveType "Logic"
+jump gotMove
+set moveName "Kinesis"
+set moveType "Logic"
+jump gotMove
+set moveName "Single Shot"
+set moveType "Offense"
+jump gotMove
+set moveName "Double Shot"
+set moveType "Offense"
+jump gotMove
+set moveName "Full Round"
+set moveType "Offense"
+jump gotMove
+set moveName "Ground Missile"
+set moveType "Offense"
+jump gotMove
+set moveName "Turret Guns"
+set moveType "Defense"
+jump gotMove
+set moveName "Disrupting Round"
+set moveType "Defense"
+jump gotMove
+set moveName "Intercept"
+set moveType "Defense"
+jump gotMove
+set moveName "Blitz"
+set moveType "Normal"
+jump gotMove
+set moveName "Collide"
+set moveType "Normal"
+jump gotMove
+set moveName "Bludgeon"
+set moveType "Normal"
+jump gotMove
+set moveName "Normal Beam"
+set moveType "Normal"
+jump gotMove
+set moveName "Paralyzing Beam"
+set moveType "Support"
+jump gotMove
+set moveName "Pick and Drop"
+set moveType "Support"
+jump gotMove
+set moveName "Ionized Fire"
+set moveType "Fire"
+jump gotMove
+set moveName "Throw Slag"
+set moveType "Fire"
+jump gotMove
+set moveName "Melt"
+set moveType "Fire"
+jump gotMove
+set moveName "Oil Bomb"
+set moveType "Fire"
+jump gotMove
+set moveName "Water Gun"
+set moveType "Water"
+jump gotMove
+set moveName "Charged Scald"
+set moveType "Water"
+jump gotMove
+set moveName "Pressure Wash"
+set moveType "Water"
+jump gotMove
+set moveName "Mortar Fire"
+set moveType "Artillery"
+jump gotMove
+set moveName "Long Distance Shells"
+set moveType "Artillery"
+jump gotMove
+set moveName "Zap"
+set moveType "Energy"
+jump gotMove
+set moveName "Stun Gun"
+set moveType "Energy"
+jump gotMove
+set moveName "Energy Blades"
+set moveType "Energy"
+jump gotMove
+set moveName "EMP Shell"
+set moveType "Energy"
+jump gotMove
+set moveName "Convey"
+set moveType "Industry"
+jump gotMove
+set moveName "Spill"
+set moveType "Industry"
+jump gotMove
+set moveName "Distribute"
+set moveType "Industry"
+jump gotMove
+set moveName "Blast Bomb"
+set moveType "Industry"
+jump gotMove
+set moveName "Landmine"
+set moveType "Ground"
+jump gotMove
+set moveName "Bulldoze"
+set moveType "Ground"
+jump gotMove
+set moveName "Shield Slam"
+set moveType "Support"
+jump gotMove
+set moveName "All Weapons"
+set moveType "Offense"
+jump gotMove
+set moveName "Corrupt Systems"
+set moveType "Logic"
+jump gotMove
+set moveName "Magnetic Waves"
+set moveType "Force"
+jump gotMove
+set moveName "Reactive Shell"
+set moveType "Defense"
+jump gotMove
+set moveName "Overheat"
+set moveType "Fire"
+jump gotMove
+set moveName "Flood"
+set moveType "Water"
+jump gotMove
+set moveName "Energy Geyser"
+set moveType "Energy"
+jump gotMove
+set moveName "Replicate Swarm"
+set moveType "Core"
+jump gotMove
+set moveName "Replicate Pulse"
+set moveType "Core"
+jump gotMove
+set moveName "Duplex Storm"
+set moveType "Core"
+jump gotMove
+set moveName "Imported Blast"
+set moveType "Core"
+jump gotMove
+set moveName "Scatter Bombs"
+set moveType "Air"
+jump gotMove
+set moveName "Hyper Pulse"
+set moveType "Support"
+jump gotMove
+set moveName "Napalm Shell"
+set moveType "Artillery"
+jump gotMove
+set moveName "Earthquake"
+set moveType "Ground"
+jump gotMove
+set moveName "Laser Cannon"
+set moveType "Energy"
+gotMove:
+fun close

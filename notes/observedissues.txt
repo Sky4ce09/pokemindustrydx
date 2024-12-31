@@ -1,0 +1,6 @@
+Player's frantic inputs may influence the behavior of the move learning system
+	- not my fault lmao
+Trainers may behave strangely when interacting with them quickly after moving
+	- ??? double check this
+Processors are probably unbalanced
+	- heck just pretend they're pseudo legendary, they have a good evo table for that

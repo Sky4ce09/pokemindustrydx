@@ -1,0 +1,44 @@
+Display Graphics:
+	0: none / rendered
+	1: main menu
+	2: companion index
+	3: companions
+	4: about screen
+	5: companion view
+	6: companion box left side
+
+Dpad Graphics:
+	0: do things on the world map
+	1: choose starter
+	2: simple up/down selector
+	3: left/right shifter
+	4: companions navigation
+	5: about back button
+	6: companion box right side
+	7: battle default screen
+	8: move menu
+
+	a/b/c:
+    a: main processor implementation index 
+    b: output implementation index (display)
+    c: output implementation index (d-pad)
+
+	a/b: (display processor is uninvolved!)
+	a: battle processor implementation index
+	b: output implementation index (d-pad)
+
+Out of battle:
+	0/0/0: no menus open
+	1/4/1: choose starter
+	2/1/2: main menu
+	3/2/3: companion index
+	4/3/4: companions
+	5/5/3: companion view
+	6/4/5: about
+	7/6/6: companion box
+In battle:
+	0/7: no menus open
+	1/8: move menu
+	2/9: companion switch menu
+
+and others i have lost track of

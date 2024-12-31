@@ -1,0 +1,829 @@
+# mainInBattle.mlog
+
+spl new companions1 MapCompanion 7:id 7:level 28:moves
+spl new learnsetMove LearnsetMove 7:id 7:level
+spl new learnsetSegment LearnsetSegment 14 * 3
+spl new databaseCompanion DatabaseCompanion 8:types 6:healthScalar 6:speed 6:pAtk 6:pDef 6:eAtk 6:eDef 6:expRewardScalar
+spl new moveset Moveset 7 * 4
+spl new floorColors FloorColors 8 * 6
+spl new wallColors WallColors 8 * 6
+spl new defendingTypeChart DefendingTypeChart 2 * 14
+spl new move Move 4:type 3:eff1 7:val1 7:acc1 3:eff2 7:val2 7:acc2
+spl new playerMove PlayerMove 4:type 3:eff1 7:val1 7:acc1 3:eff2 7:val2 7:acc2
+spl new enemyMove EnemyMove 4:type 3:eff1 7:val1 7:acc1 3:eff2 7:val2 7:acc2
+spl new dex Dex 2 * 24
+
+expect bank21 cell1 cell2 cell3 cell4 cell5
+set mainInterface cell1
+set battleInterface cell2
+set moveDatabase cell3
+set touchInterfaceDisplay cell4
+set touchInterfaceDpad cell5
+set companionDatabase bank21
+
+stopBattle:
+write 0 mainInterface 61
+allowance:
+read allowed mainInterface 61
+jump allowance notEqual allowed 1
+
+fun have resetMenu
+read currentMapIndex mainInterface 45
+getlink mapInterface currentMapIndex
+read companions1 battleInterface 16
+read companions2 battleInterface 17
+read battleType battleInterface 18
+read opponentCompanionCount battleInterface 19
+parr battleType
+# companions1 is a randomly generated companion
+op idiv companionID companions1 0b10000000
+fun have addToDex
+op mod companionLevel companions1 0b10000000
+fun have getHealthAndTypes
+fun have getRandomMoveset
+op shl types types 7
+op add companionIDAndTypes companionID types
+write companionIDAndTypes battleInterface 27
+write companionLevel battleInterface 28
+write maxHealth battleInterface 29
+/
+# companions1 is a mapCompanion
+op mod companionID companions1 0b10000000
+fun have addToDex
+op shr companions1 companions1 7
+op mod companionLevel companions1 0b10000000
+fun have getHealthAndTypes
+op shl types types 7
+op add companionIDAndTypes companionID types
+write companionIDAndTypes battleInterface 27
+write companionLevel battleInterface 28
+write maxHealth battleInterface 29
+op shr companions1 companions1 7
+op mod move companions1 0b10000000
+write move battleInterface 30
+op shr companions1 companions1 7
+op mod move companions1 0b10000000
+write move battleInterface 31
+op shr companions1 companions1 7
+op mod move companions1 0b10000000
+write move battleInterface 32
+op shr move companions1 7
+op mod move move 0b10000000
+write move battleInterface 33
+/
+# you're fighting a trainer, good luck
+set opponentCompanionIndex 0
+fun have getNextOpposingCompanion
+//
+
+set playerCompanionIndex 0
+for healthIndex = 2 <= 37 7
+read totalHealth mainInterface healthIndex
+op mod health totalHealth 0b10000000000
+jump foundPlayerCompanion greaterThan health 0
+op add playerCompanionIndex playerCompanionIndex 1
+next
+foundPlayerCompanion:
+write playerCompanionIndex battleInterface 43
+write totalHealth battleInterface 22
+op sub idIndex healthIndex 2
+read id mainInterface idIndex
+op add typeIndex idIndex 1
+read types mainInterface typeIndex
+op shl idAndTypes types 7
+op add idAndTypes idAndTypes id
+write idAndTypes battleInterface 20
+op add levelIndex healthIndex 1
+read levelAndStatus mainInterface levelIndex
+write levelAndStatus battleInterface 21
+op add moveIndex idIndex 6
+read moveset mainInterface moveIndex
+set moveSlotIndex 0
+for targetIndex = 23 < 27 1
+spl od move Moveset moveSlotIndex
+write move battleInterface targetIndex
+op add moveSlotIndex moveSlotIndex 1
+next
+fun have drawBattle
+write -1 touchInterfaceDpad 59
+fun have awaitTouchscreenLibReadyStatus
+
+mainLoop:
+read action touchInterfaceDpad 59
+fun have actionDpad greaterThan action -1
+jump mainLoop
+
+fun new getNextOpposingCompanion
+spl new companions1 C1 14 * 3
+spl new companions2 C2 14 * 3
+jump stopBattle equal opponentCompanionIndex opponentCompanionCount
+op mod modIndex opponentCompanionIndex 3
+op idiv divIndex opponentCompanionIndex 3
+parr divIndex
+spl od opponentCompanion C1 modIndex
+/
+spl od opponentCompanion C2 modIndex
+//
+op idiv companionLevel opponentCompanion 0b10000000
+op mod companionID opponentCompanion 0b10000000
+fun have getHealthAndTypes
+fun have getLatestMoveset
+op shl types types 7
+op add companionIDAndTypes companionID types
+write companionIDAndTypes battleInterface 27
+write companionLevel battleInterface 28
+write maxHealth battleInterface 29
+op add opponentCompanionIndex opponentCompanionIndex 1
+fun have addToDex
+fun have drawBattle
+fun close
+
+fun new addToDex # companionID
+op mod dexSegment companionID 24
+op idiv dexSlot companionID 24
+op add dexSlot dexSlot 34
+read dex battleInterface dexSlot
+spl wd- 1 Dex dexSegment # seen
+write dex battleInterface dexSlot
+fun close
+
+fun new drawBattle
+read floorColors mapInterface 503
+read wallColors mapInterface 504
+read companionID battleInterface 20
+read levelAndStatus battleInterface 21
+read healthStats battleInterface 22
+read companionID2 battleInterface 27
+read levelAndStatus2 battleInterface 28
+read healthStats2 battleInterface 29
+write 1 battleInterface 48
+spl of floorAr FloorColors 2
+spl of floorAg FloorColors 1
+spl of floorAb FloorColors 0
+spl of floorBr FloorColors 5
+spl of floorBg FloorColors 4
+spl of floorBb FloorColors 3
+spl of wallAr WallColors 2
+spl of wallAg WallColors 1
+spl of wallAb WallColors 0
+spl of wallBr WallColors 5
+spl of wallBg WallColors 4
+spl of wallBb WallColors 3
+draw clear 0 0 0
+draw color floorAr floorAg floorAb 20
+draw rect 0 0 176 44
+draw color floorAr floorAg floorAb 35
+draw rect 0 44 176 44
+draw color floorAr floorAg floorAb 50
+draw rect 0 88 176 44
+draw color wallAr wallAg wallAb 80
+draw rect 0 132 176 44
+op mod scenery currentMapIndex 6
+parr scenery
+draw color wallBr floorAg wallBb 40
+draw triangle 0 176 88 88 88 176
+draw color wallBr floorBg wallBb 40
+draw triangle 176 176 88 88 88 176
+/
+/
+draw color floorBr floorBg floorBb 30
+draw rect 0 0 176 110
+draw rect 0 0 176 55
+/
+draw color floorBr floorBg floorBb 60
+draw poly 88 88 5 60 20
+/
+draw color 0 0 0 40
+draw triangle 0 0 0 100 100 0
+draw triangle 176 176 76 176 176 76
+draw color floorBr floorBg floorBb 30
+draw poly 88 88 8 20 10
+/
+draw color 255 255 255 40
+draw triangle 0 0 0 100 100 0
+draw triangle 176 176 76 176 176 76
+draw color floorBr floorBg floorBb 30
+draw poly 88 88 6 20 10
+//
+draw stroke 4
+draw color 48 48 48 220
+draw lineRect 60 0 116 44
+draw lineRect 0 132 116 44
+draw color 32 32 32 200
+draw rect 64 4 108 36
+draw rect 4 136 108 36
+
+draw color 255 255 255
+op mod companionID companionID 0b10000000
+fun have getCompanionInfo
+print companionNameShort
+draw print 65 42 topLeft
+op mod level levelAndStatus 0b10000000
+op idiv status levelAndStatus 0b10000000
+fun have printStatus
+draw image 15 15 companionSprite 70 320
+draw print 171 42 topRight
+draw color 255 255 255
+print "Lv"
+print level
+draw print 65 30 topLeft
+op mod health healthStats 0b10000000000
+op idiv maxHealth healthStats 0b10000000000
+print health
+print "/"
+print maxHealth
+draw print 171 30 topRight
+op div healthQuotient health maxHealth
+op mul width 104 healthQuotient
+draw color 0 0 0 255
+draw rect 64 4 108 12
+op mul healthColor healthQuotient 2.9999
+op floor healthColor healthColor
+parr healthColor
+draw color 250 100 100 115
+/
+draw color 225 225 125 115
+/
+draw color 150 250 150 115
+//
+draw rect 66 6 104 8
+parr healthColor
+draw color 250 100 100 255
+/
+draw color 225 225 125 255
+/
+draw color 150 250 150 255
+//
+draw rect 66 6 width 8
+
+draw color 255 255 255
+set companionID companionID2
+op mod companionID companionID 0b10000000
+fun have getCompanionInfo
+print companionNameShort
+draw print 5 174 topLeft
+set levelAndStatus levelAndStatus2
+op mod level levelAndStatus 0b10000000
+op idiv status levelAndStatus 0b10000000
+fun have printStatus
+draw image 151 151 companionSprite 50 140
+draw print 111 174 topRight
+draw color 255 255 255
+print "Lv"
+print level
+draw print 5 162 topLeft
+set healthStats healthStats2
+op mod health healthStats 0b10000000000
+op idiv maxHealth healthStats 0b10000000000
+op div healthQuotient health maxHealth
+op mul healthPercent healthQuotient 100
+op greaterThan notZero health 0
+op lessThan underOnePercent healthPercent 1
+op floor healthPercent healthPercent
+op add edgeCase notZero underOnePercent
+jump procUnderOnePercent equal edgeCase 2
+print healthPercent
+print "%"
+jump percentageHealthDrawn
+procUnderOnePercent:
+print "<1%"
+percentageHealthDrawn:
+draw print 111 162 topRight
+op mul width healthQuotient 104
+draw color 0 0 0 255
+draw rect 4 136 108 12
+op mul healthColor healthQuotient 2.9999
+op floor healthColor healthColor
+parr healthColor
+draw color 250 100 100 115
+/
+draw color 225 225 125 115
+/
+draw color 150 250 150 115
+//
+draw rect 6 138 104 8
+parr healthColor
+draw color 250 100 100 255
+/
+draw color 225 225 125 255
+/
+draw color 150 250 150 255
+//
+draw rect 6 138 width 8
+df display1
+fun close
+
+fun new printStatus # status
+parr status
+print "OK"
+draw color 255 255 255 255
+/
+print "ELC"
+draw color 255 255 135 255
+/
+print "MLT"
+draw color 255 135 135 255
+//
+write -1 battleInterface 47
+fun close
+
+fun new awaitTouchscreenLibReadyStatus
+waitForTouchscreenLibToGetReady:
+read ready touchInterfaceDpad 58
+jump waitForTouchscreenLibToGetReady notEqual ready -1
+fun close
+
+fun new actionDpad
+set fainting false
+write -1 battleInterface 44
+parr menuIndexDpad
+# --- Battle Main Screen
+op min action' action 2
+parr action'
+set menuIndexDpad 1
+write 8 touchInterfaceDpad 58
+fun have awaitTouchscreenLibReadyStatus
+/
+set menuIndexDpad 2
+write 9 touchInterfaceDpad 58
+fun have awaitTouchscreenLibReadyStatus
+/
+# catch or flee
+op sub action action 2
+fun have sendCommand
+fun have updateLocalStatus
+fun have afterTurn
+read response battleInterface 44
+fun have resetMenu equal response 0
+jump stopBattle notEqual response 0 # don't flee if response given (catch/flee fail)
+# fun have drawBattle
+//
+/
+# --- Move Select
+op equal action' action 4
+parr action'
+fun have sendCommand
+fun have afterTurn
+read response battleInterface 44
+fun have resetMenu notEqual response 0
+# fun have drawBattle notEqual response 0
+/
+fun have resetMenu
+//
+/
+# --- Companion Select
+op equal action' action 6
+parr action'
+switchCompanionCommand:
+fun have sendCommand
+read response battleInterface 44
+fun have updateLocalStatus
+fun have afterTurn equal menuIndexDpad 2
+fun have resetMenu notEqual response 0
+# fun have drawBattle notEqual response 0
+/
+fun have resetMenu
+//
+/
+# --- Force Companion Select
+jump switchCompanionCommand
+//
+endActionDpad:
+write -1 touchInterfaceDpad 59
+fun close
+
+fun new updateLocalStatus
+read currentlyFightingCompanionIndex battleInterface 43
+op mul mainIndex currentlyFightingCompanionIndex 7
+op add healthIndex mainIndex 2
+op add statusIndex mainIndex 3
+read status battleInterface 21
+read health battleInterface 22
+write health mainInterface healthIndex
+write status mainInterface statusIndex
+fun close
+
+fun new sendCommand
+write action battleInterface 42
+write menuIndexDpad battleInterface 41
+waitBattleLogic:
+read drawBattleRequest battleInterface 47
+fun have drawBattle equal drawBattleRequest 1
+read ready battleInterface 41
+jump waitBattleLogic greaterThan ready -1
+fun close
+
+fun new afterTurn
+read healthStats battleInterface 22
+op mod health healthStats 0b10000000000
+jump checkEnemyHealth greaterThan health 0
+
+set companionsRemaining 0
+set healthIndex 2
+read companionCount mainInterface 42
+for i = 0 < companionCount 1
+read healthStats mainInterface healthIndex
+op mod health healthStats 0b10000000000
+op notEqual canFight health 0
+op add companionsRemaining companionsRemaining canFight
+op add healthIndex healthIndex 7
+next
+op equal lost companionsRemaining 0
+write lost battleInterface 40
+jump stopBattle equal lost true
+
+set menuIndexDpad 3
+write 0 battleInterface 44
+set fainting true
+write 10 touchInterfaceDpad 58
+fun have awaitTouchscreenLibReadyStatus
+
+checkEnemyHealth:
+read healthStats battleInterface 29
+op mod health healthStats 0b10000000000
+jump completeAfterTurn greaterThan health 0
+
+jump stopBattle notEqual battleType 2
+fun have getNextOpposingCompanion
+completeAfterTurn:
+fun close
+
+fun new resetMenu
+jump preventMenuReset equal fainting true
+set menuIndexDpad 0
+write 7 touchInterfaceDpad 58
+fun have awaitTouchscreenLibReadyStatus
+write -1 touchInterfaceDpad 59
+preventMenuReset:
+fun close
+
+fun new getLatestMoveset # companionID, companionLevel
+op mul learnsetIndex companionID 3
+op add learnsetIndex learnsetIndex 96
+set lastMoveLevel 0
+for i = 0 < 9 1
+op mod movesetSlot i 4
+op mod learnsetSegmentMoveIndex i 3
+op idiv learnsetIndexShift i 3
+op add learnsetIndex' learnsetIndex learnsetIndexShift
+read learnsetSegment companionDatabase learnsetIndex'
+spl od learnsetMove LearnsetSegment learnsetSegmentMoveIndex
+spl of learnID LearnsetMove id
+spl of learnLevel LearnsetMove level
+jump latestReached greaterThan learnLevel companionLevel
+jump latestReached lessThan learnLevel lastMoveLevel
+set lastMoveLevel learnLevel
+op add movesetSlot movesetSlot 30
+write learnID battleInterface movesetSlot
+next
+latestReached:
+for i < 4 1
+op add movesetSlot i 30
+write 0 battleInterface movesetSlot
+next
+fun close
+
+fun new getRandomMoveset # companionID, companionLevel
+op mul learnsetIndex companionID 3
+op add learnsetIndex learnsetIndex 96
+set moveCount 0
+set lastMoveLevel 0
+for i = 0 < 9 1
+op mod learnsetSegmentMoveIndex i 3
+op idiv learnsetIndexShift i 3
+op add learnsetIndex' learnsetIndex learnsetIndexShift
+read learnsetSegment companionDatabase learnsetIndex'
+spl od learnsetMove LearnsetSegment learnsetSegmentMoveIndex
+spl of learnID LearnsetMove id
+spl of learnLevel LearnsetMove level
+jump stopGoingThroughLearnsetMoves lessThan learnLevel lastMoveLevel
+jump stopGoingThroughLearnsetMoves lessThan companionLevel learnLevel
+op add tableIndex i 55
+write learnID battleInterface tableIndex
+op add moveCount moveCount 1
+next
+stopGoingThroughLearnsetMoves:
+op min movesRemaining moveCount 4
+op add maxTableIndex 55 moveCount
+op sub maxTableIndex maxTableIndex 1
+set moveCount' moveCount
+for i = maxTableIndex >= 55 -1
+op rand random moveCount'
+# op floor random random
+op add random random 55
+read swap1 battleInterface i
+read swap2 battleInterface random
+write swap2 battleInterface i
+write swap1 battleInterface random
+op sub moveCount' moveCount' 1
+next
+doneShufflingMoves:
+for i = 30 < 34 1
+write 0 battleInterface i
+next
+
+set moveset 0
+op rand movesRemaining movesRemaining # prevent wild companions from always
+op sub movesRemaining movesRemaining 2 # being useful mid-late game
+op pow movesRemaining movesRemaining 3
+op div movesRemaining movesRemaining 4
+op add movesRemaining movesRemaining 3
+op floor movesRemaining movesRemaining
+for i = 0 < movesRemaining 1
+op add readRandomMove i 55
+read move battleInterface readRandomMove
+op add writeMoveIndex i 30
+write move battleInterface writeMoveIndex
+next
+for movesRemaining < 4 1
+op add writeMoveIndex movesRemaining 30
+write 0 battleInterface writeMoveIndex
+next
+fun close
+
+fun new getHealthAndTypes # companionID, companionLevel
+read databaseCompanion companionDatabase companionID
+spl of types DatabaseCompanion types
+spl of healthScalar DatabaseCompanion healthScalar
+op add healthScalar' healthScalar 20
+op mul maxHealth companionLevel healthScalar'
+op idiv maxHealth maxHealth 10
+op add maxHealth maxHealth 5
+op shl maxHealth' maxHealth 10
+op add maxHealth maxHealth maxHealth'
+fun close
+
+fun new getCompanionInfo
+op mul companionID' companionID 3
+op add @counter @counter companionID'
+set companionNameShort "Dagger"
+set companionSprite @dagger
+jump gotData
+set companionNameShort "Mace"
+set companionSprite @mace
+jump gotData
+set companionNameShort "Fortress"
+set companionSprite @fortress
+jump gotData
+set companionNameShort "Nova"
+set companionSprite @nova
+jump gotData
+set companionNameShort "Pulsar"
+set companionSprite @pulsar
+jump gotData
+set companionNameShort "Quasar"
+set companionSprite @quasar
+jump gotData
+set companionNameShort "Crawler"
+set companionSprite @crawler
+jump gotData
+set companionNameShort "Atrax"
+set companionSprite @atrax
+jump gotData
+set companionNameShort "Spiroct"
+set companionSprite @spiroct
+jump gotData
+set companionNameShort "Stell"
+set companionSprite @stell
+jump gotData
+set companionNameShort "Locus"
+set companionSprite @locus
+jump gotData
+set companionNameShort "Precept"
+set companionSprite @precept
+jump gotData
+set companionNameShort "Merui"
+set companionSprite @merui
+jump gotData
+set companionNameShort "Cleroi"
+set companionSprite @cleroi
+jump gotData
+set companionNameShort "Anthicus"
+set companionSprite @anthicus
+jump gotData
+set companionNameShort "Flare"
+set companionSprite @flare
+jump gotData
+set companionNameShort "Horizon"
+set companionSprite @horizon
+jump gotData
+set companionNameShort "Zenith"
+set companionSprite @zenith
+jump gotData
+set companionNameShort "Mono"
+set companionSprite @mono
+jump gotData
+set companionNameShort "Poly"
+set companionSprite @poly
+jump gotData
+set companionNameShort "Mega"
+set companionSprite @mega
+jump gotData
+set companionNameShort "Elude"
+set companionSprite @elude
+jump gotData
+set companionNameShort "Avert"
+set companionSprite @avert
+jump gotData
+set companionNameShort "Obviate"
+set companionSprite @obviate
+jump gotData
+set companionNameShort "Risso"
+set companionSprite @risso
+jump gotData
+set companionNameShort "Minke"
+set companionSprite @minke
+jump gotData
+set companionNameShort "Bryde"
+set companionSprite @bryde
+jump gotData
+set companionNameShort "Retusa"
+set companionSprite @retusa
+jump gotData
+set companionNameShort "Oxynoe"
+set companionSprite @oxynoe
+jump gotData
+set companionNameShort "Cyerce"
+set companionSprite @cyerce
+jump gotData
+set companionNameShort "Co. Wall S"
+set companionSprite @copper-wall
+jump gotData
+set companionNameShort "Co. Wall L"
+set companionSprite @copper-wall-large
+jump gotData
+set companionNameShort "Ti. Wall S"
+set companionSprite @titanium-wall
+jump gotData
+set companionNameShort "Ti. Wall L"
+set companionSprite @titanium-wall-large
+jump gotData
+set companionNameShort "Pl. Wall S"
+set companionSprite @plastanium-wall
+jump gotData
+set companionNameShort "Pl. Wall L"
+set companionSprite @plastanium-wall-large
+jump gotData
+set companionNameShort "Th. Wall S"
+set companionSprite @thorium-wall
+jump gotData
+set companionNameShort "Th. Wall L"
+set companionSprite @thorium-wall-large
+jump gotData
+set companionNameShort "Ph. Wall S"
+set companionSprite @phase-wall
+jump gotData
+set companionNameShort "Ph. Wall L"
+set companionSprite @phase-wall-large
+jump gotData
+set companionNameShort "Su. Wall S"
+set companionSprite @surge-wall
+jump gotData
+set companionNameShort "Su. Wall L"
+set companionSprite @surge-wall-large
+jump gotData
+set companionNameShort "Door S"
+set companionSprite @door
+jump gotData
+set companionNameShort "Door L"
+set companionSprite @door-large
+jump gotData
+set companionNameShort "Conveyor"
+set companionSprite @conveyor
+jump gotData
+set companionNameShort "Ti. Conveyor"
+set companionSprite @titanium-conveyor
+jump gotData
+set companionNameShort "Ar. Conveyor"
+set companionSprite @armored-conveyor
+jump gotData
+set companionNameShort "Conduit"
+set companionSprite @conduit
+jump gotData
+set companionNameShort "Pu. Conduit"
+set companionSprite @pulse-conduit
+jump gotData
+set companionNameShort "Pl. Conduit"
+set companionSprite @plated-conduit
+jump gotData
+set companionNameShort "Router"
+set companionSprite @router
+jump gotData
+set companionNameShort "Distributor"
+set companionSprite @distributor
+jump gotData
+set companionNameShort "Container"
+set companionSprite @container
+jump gotData
+set companionNameShort "Vault"
+set companionSprite @vault
+jump gotData
+set companionNameShort "Liq. Contai."
+set companionSprite @liquid-container
+jump gotData
+set companionNameShort "Liq. Tank"
+set companionSprite @liquid-tank
+jump gotData
+set companionNameShort "Micro Proc."
+set companionSprite @micro-processor
+jump gotData
+set companionNameShort "Logic Proc."
+set companionSprite @logic-processor
+jump gotData
+set companionNameShort "Hyper Proc."
+set companionSprite @hyper-processor
+jump gotData
+set companionNameShort "Shard"
+set companionSprite @core-shard
+jump gotData
+set companionNameShort "Foundation"
+set companionSprite @core-foundation
+jump gotData
+set companionNameShort "Nucleus"
+set companionSprite @core-nucleus
+jump gotData
+set companionNameShort "Bastion"
+set companionSprite @core-bastion
+jump gotData
+set companionNameShort "Citadel"
+set companionSprite @core-citadel
+jump gotData
+set companionNameShort "Acropolis"
+set companionSprite @core-acropolis
+jump gotData
+set companionNameShort "Alpha"
+set companionSprite @alpha
+jump gotData
+set companionNameShort "Beta"
+set companionSprite @beta
+jump gotData
+set companionNameShort "Gamma"
+set companionSprite @gamma
+jump gotData
+set companionNameShort "Evoke"
+set companionSprite @evoke
+jump gotData
+set companionNameShort "Incite"
+set companionSprite @incite
+jump gotData
+set companionNameShort "Emanate"
+set companionSprite @emanate
+jump gotData
+set companionNameShort "Elec. Heater"
+set companionSprite @electric-heater
+jump gotData
+set companionNameShort "Slag Heater"
+set companionSprite @slag-heater
+jump gotData
+set companionNameShort "Phase Heater"
+set companionSprite @phase-heater
+jump gotData
+set companionNameShort "Force Proj."
+set companionSprite @force-projector
+jump gotData
+set companionNameShort "Duo"
+set companionSprite @duo
+jump gotData
+set companionNameShort "Salvo"
+set companionSprite @salvo
+jump gotData
+set companionNameShort "Spectre"
+set companionSprite @spectre
+jump gotData
+set companionNameShort "Arc"
+set companionSprite @arc
+jump gotData
+set companionNameShort "Lancer"
+set companionSprite @lancer
+jump gotData
+set companionNameShort "Meltdown"
+set companionSprite @meltdown
+jump gotData
+set companionNameShort "Wave"
+set companionSprite @wave
+jump gotData
+set companionNameShort "Tsunami"
+set companionSprite @tsunami
+jump gotData
+set companionNameShort "Parallax"
+set companionSprite @parallax
+jump gotData
+set companionNameShort "Reign"
+set companionSprite @reign
+jump gotData
+set companionNameShort "Corvus"
+set companionSprite @corvus
+jump gotData
+set companionNameShort "Toxopid"
+set companionSprite @toxopid
+jump gotData
+set companionNameShort "Eclipse"
+set companionSprite @eclipse
+jump gotData
+set companionNameShort "Oct"
+set companionSprite @oct
+jump gotData
+set companionNameShort "World Proc."
+set companionSprite @world-processor
+gotData:
+fun close

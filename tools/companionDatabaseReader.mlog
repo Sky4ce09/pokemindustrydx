@@ -1,0 +1,48 @@
+spl new companion Companion 4 4 6 6 6 6 6 6 6
+sensor next switch1 @enabled
+jump doNext equal next 1
+sensor prev switch2 @enabled
+jump doPrev equal prev 1
+fun have prints
+jump 0 always
+
+doNext:
+control enabled switch1 0
+op add readFrom readFrom 1
+jump 0 always
+
+doPrev:
+control enabled switch2 0
+op sub readFrom readFrom 1
+
+fun new prints
+read companion bank1 readFrom
+spl of type1 Companion 0
+spl of type2 Companion 1
+spl of health Companion 2
+spl of speed Companion 3
+spl of pa Companion 4
+spl of pd Companion 5
+spl of ea Companion 6
+spl of ed Companion 7
+spl of exp Companion 8
+print "type1:"
+print type1
+print "\ntype2:"
+print type2
+print "\nhealth:"
+print health
+print "\nspeed:"
+print speed 
+print "\npa:"
+print pa 
+print "\npd:"
+print pd
+print "\nea:"
+print ea
+print "\ned:"
+print ed
+print "\nexp:"
+print exp
+pf message1
+fun close

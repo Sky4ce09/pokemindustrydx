@@ -1,0 +1,89 @@
+mapInterface:
+	0-502: level data
+	503: floor colors
+	504: wall colors
+	505: grass group A companion ids
+	506: grass group A companion min levels
+	507: grass group A companion max levels
+	508: grass group B companion ids
+	509: grass group B companion min levels
+	510: grass group B companion max levels
+	511: level status (1 = ready, write 0 to reset level fully)
+
+mainInterface:
+	0-41: team companion data
+	42: team companion count
+
+	43: player x
+	44: player y
+	45: current map index
+	46: player rotation
+	47: loaded map region lower boundary x
+	48: loaded map region lower boundary y
+	49: loaded map region upper boundary x
+	50: loaded map region upper boundary y
+	51: exp share on/off
+	52: grass grace
+	53: triggered a move learning sequence yes/no
+	60: menuIndex
+	61: inbattle flag
+	62: trapdoor flag
+	63: scrolling menu selected index
+
+renderInterface / battleInterface:
+	renderInterface:
+		0: signal to renderers
+		1-15: signals from renderers
+		53: (view companion) viewed companion
+		54: (companions tab) companion to swap with
+		55-63: free space for move shuffling
+	battleInterface:
+		16: companions 1-3 up for decoding / generation (write before starting!)
+		17: companions 4-6 up for decoding / generation (write before starting!)
+		18: battle type (0 = wild, 1 = overworld, 2 = trainer) (helps with decoding) (write before starting!)
+		19: opponent companion count (write before starting!)
+		20-26: player's currently fighting companion (id/types, level/status, health/maxHealth, moves 1-4)
+		27-33: opponent's currently fighting companion
+		34-37: companion index
+		38: encountered companion types count
+		39: caught companion types count
+		40: lost the battle?
+		41: transmitted action type (mainInBattle's menuIndexDpad)
+		42: transmitted action (mainInBattle's action)
+		43: player fighting companion index
+		44: battle logic response
+		45: player recently used move
+		46: enemy recently used move
+		47: midturn channel
+		48: mainInBattle obtained visual data channel
+		49: level ups by index
+		50: contributed to opponent fainting? by index
+		51: referenced companion index in move learning / id in evolving, for graphicsdpad
+		52: referenced move in move learning / target companion id in evolving, for graphicsdpad
+
+moveDatabase:
+	0-52: moves
+
+companionDatabase:
+	0-95: companion entries
+	96-383: companion learnsets
+	384-479: companion evolutions
+
+touchInterfaceDisplay:
+	0: update internals signal
+	58: switch menu channel
+	59: player input channel
+
+touchInterfaceDpad:
+	0: update internals signal
+	58: switch menu channel
+	59: player input channel
+
+companionBox:
+	0-61: stored companion data
+	62: amount of companions inside the box
+	63: companion box menu selected index
+
+messageInterface:
+	0-11: messages
+	63: message signal

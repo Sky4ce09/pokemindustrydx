@@ -1,0 +1,413 @@
+# touchscreenLibRegionManager-dpad.mlog
+
+spl new region Region 1:circular 1:click 1:hover
+spl new region RectangularRegion 1:circular 1:click 1:hover 8:x1 8:y1 8:x2 8:y2
+spl new region CircularRegion 1:circular 1:click 1:hover 8:x 8:y 8:r
+spl new color Color 8 * 4 0:r 1:g 2:b 3:a
+spl new dex Dex 2 * 24
+
+jump 0 equal display1 null
+jump 1 equal cell1 null
+set REGIONCOUNT_OFFSET 4
+write 3 cell1 3 # init default stroke size
+for i = REGIONCOUNT_OFFSET < 60 1
+write -1 cell1 i
+next
+sensor x display1 @x
+sensor y display1 @y
+sensor type display1 @type
+jump displayo2 equal type @large-logic-display
+op sub x x 1.25
+op sub y y 1.25
+jump loop always
+displayo2:
+op sub x x 2.75
+op sub y y 2.75
+
+loop:
+read clicked cell1 60
+jump notClicked equal clicked 0
+write 0 cell1 60
+notClicked:
+read sx cell1 61
+read sy cell1 62
+op sub dx sx x
+op mul dx dx 32
+op sub dy sy y
+op mul dy dy 32
+fun have analyzeRegions
+read needsUpdate cell1 0
+fun have update equal needsUpdate 1
+
+read regionIndex cell1 58
+fun have switchRegionSet > regionIndex -1
+jump loop always
+
+fun new handleDelayedAutoMovement
+jump pass equal clicked 1
+jump relevant equal canCastDAM true
+jump deny equal clicked 2
+relevant:
+op sub i' i REGIONCOUNT_OFFSET
+jump deny lessThan i' minDAM
+jump deny greaterThan i' maxDAM
+op mul clickedValid clicked withinBounds
+op equal clickedValid clickedValid 2
+jump endHandleDelayedAutoMovement
+deny:
+set clickedValid false
+jump endHandleDelayedAutoMovement
+pass:
+set clickedValid true
+endHandleDelayedAutoMovement:
+fun close
+
+fun new analyzeRegions
+set hoverProcessed false
+set stateChange false
+set previousHoveredRegion currentHoveredRegion
+set previousSelectedRegion currentSelectedRegion
+set currentHoveredRegion 0
+jump sleepSelected equal clicked false
+set currentSelectedRegion 0
+sleepSelected:
+for i = REGIONCOUNT_OFFSET < regionCount 1
+read region cell1 i
+spl of unhoverable Region hover
+op sub hoverable 1 unhoverable
+op mul newRegion hoverable i
+fun have getRegionCoordinates
+fun have isWithinBounds
+jump processClickState equal hoverProcessed true
+jump previouslyHovering notEqual previousHoveredRegion 0
+
+# checking if this region is hovered
+jump changeHoveredRegion equal withinBounds true
+jump processClickState always
+
+# the previous hovered region exists:
+previouslyHovering:
+op equal sameRegion previousHoveredRegion i
+op land cursorStaysInRegion sameRegion withinBounds
+jump hoveringSameRegion equal cursorStaysInRegion 1 # don't change anything
+
+op sub anotherRegion 1 sameRegion
+op land cursorInAnotherRegion anotherRegion withinBounds
+jump changeHoveredRegion equal cursorInAnotherRegion 1 # switch regions
+jump processClickState always
+
+changeHoveredRegion:
+jump processClickState equal unhoverable true
+set currentHoveredRegion i
+fun have announceStateChange
+set hoverProcessed true
+jump processClickState always
+
+hoveringSameRegion:
+set currentHoveredRegion newRegion
+set hoverProcessed hoverable
+
+processClickState:
+# and we only need to work here if the user actually clicked
+fun have handleDelayedAutoMovement
+jump output equal clickedValid false
+jump output equal clicked false
+# are we clicking the same region as clicked before? only send another signal
+jump output equal withinBounds false
+jump sendClickSignal equal i previousSelectedRegion
+
+fun have announceStateChange
+
+sendClickSignal:
+spl of unselectable Region click
+jump noselect equal unselectable 1
+set currentSelectedRegion i
+noselect:
+op sub writeRegion i 4
+write writeRegion cell1 59
+
+output:
+next # close the loop and finalize
+
+jump noStateChangeNeededSelect equal clicked false
+jump noStateChangeNeededSelect notEqual currentSelectedRegion 0
+jump noStateChangeNeededSelect equal previousSelectedRegion 0
+
+fun have announceStateChange
+
+noStateChangeNeededSelect:
+jump noStateChangeNeededHover notEqual currentHoveredRegion 0
+jump noStateChangeNeededHover equal previousHoveredRegion 0
+
+fun have announceStateChange
+
+noStateChangeNeededHover:
+# finally give output!
+jump skipDraw equal stateChange false
+
+jump skipSelectFrame equal currentSelectedRegion 0
+read region cell1 currentSelectedRegion
+fun have getRegionCoordinates
+draw color rselect gselect bselect aselect
+jump drawCircularSelect equal circular 1
+op sub drawx x1 2
+op sub drawy y1 2
+op sub w x2 x1
+op sub h y2 y1
+op add w w 4
+op add h h 4
+draw lineRect drawx drawy w h
+jump finishDrawSelect always
+drawCircularSelect:
+op add r r 2
+draw linePoly x1 y1 69 r 0
+
+finishDrawSelect:
+skipSelectFrame:
+jump skipHoverFrame equal currentHoveredRegion 0
+read region cell1 currentHoveredRegion
+fun have getRegionCoordinates
+draw color rhover ghover bhover ahover
+jump drawCircularHover equal circular 1
+op sub drawx x1 4
+op sub drawy y1 4
+op sub w x2 x1
+op sub h y2 y1
+op add w w 8
+op add h h 8
+draw lineRect drawx drawy w h
+jump finishDrawHover always
+drawCircularHover:
+op add r r 4
+draw linePoly x1 y1 69 r 0
+
+finishDrawHover:
+skipHoverFrame:
+read ready cell1 63
+jump finishDrawHover notEqual ready 0
+df display1
+
+skipDraw:
+fun close
+
+fun new update
+set regionCount 0
+for i = REGIONCOUNT_OFFSET < 58 1
+read data cell1 i
+jump countBreak equal data -1
+op add regionCount regionCount 1
+next
+countBreak:
+op add regionCount regionCount REGIONCOUNT_OFFSET
+set currentHoveredRegion 0
+read color cell1 1
+spl of rselect Color r
+spl of gselect Color g
+spl of bselect Color b
+spl of aselect Color a
+read color cell1 2
+spl of rhover Color r
+spl of ghover Color g
+spl of bhover Color b
+spl of ahover Color a
+read strokeSize cell1 3
+draw stroke strokeSize
+write currentRegionIndex cell1 63
+write 0 cell1 0
+fun close
+
+fun new isWithinBounds
+# assumes that the variable "circular" is up to date
+jump circularProcedure equal circular 1
+jump notWithinBounds lessThan dx x1
+jump notWithinBounds greaterThan dx x2
+jump notWithinBounds lessThan dy y1
+jump notWithinBounds greaterThan dy y2
+set withinBounds true
+jump endIsWithinBounds always
+notWithinBounds:
+set withinBounds false
+jump endIsWithinBounds always
+circularProcedure:
+op sub testx dx x1
+op sub testy dy y1
+op len distance testx testy
+op lessThanEq withinBounds distance r
+endIsWithinBounds:
+fun close
+
+fun new announceStateChange
+set stateChange true
+write currentRegionIndex cell1 63
+fun close
+
+fun new getRegionCoordinates
+spl of circular Region circular
+jump getCircularCoordinates equal circular 1
+spl of x1 RectangularRegion x1
+spl of y1 RectangularRegion y1
+spl of x2 RectangularRegion x2
+spl of y2 RectangularRegion y2
+jump finishGetCoordinates
+getCircularCoordinates:
+spl of x1 CircularRegion x
+spl of y1 CircularRegion y
+spl of r CircularRegion r
+finishGetCoordinates:
+fun close
+
+fun new countCompanionTypeStats
+set encounterCounter 0
+set catchCounter 0
+for i = 0 < 90 1
+op mod dexSegment i 24
+op idiv dexSlot i 24
+op add dexSlot dexSlot 34
+read dex cell3 dexSlot
+spl od dexEntry Dex dexSegment
+jump countNextType lessThan dexEntry 1
+op add encounterCounter encounterCounter 1
+jump countNextType lessThan dexEntry 3
+op add catchCounter catchCounter 1
+countNextType:
+next
+write encounterCounter cell3 38
+write catchCounter cell3 39
+fun close
+
+fun new switchRegionSet
+set canCastDAM false
+op add currentRegionIndex regionIndex 1
+parr regionIndex
+# --- Do Things In The World Map
+set canCastDAM true
+set minDAM 0
+set maxDAM 3
+write 0x6441AAE6 cell1 2
+write 2 cell1 3
+write 0x573A3E1E2 cell1 4
+write 0x3A1A1E012 cell1 5
+write 0x1A3A011E2 cell1 6
+write 0x3A571E3E2 cell1 7
+write 0xFAC2C3 cell1 8
+write 0xCC9C9B cell1 9
+write -1 cell1 10
+/
+# --- Choose Starter
+write 0xFFFFFFFF cell1 2
+write 4 cell1 3
+write 0x2AA49690A cell1 4
+write 0x2AC796B3A cell1 5
+write -1 cell1 6
+/
+# --- Up Down Cancel Select
+write 0x6441AAE6 cell1 2
+write 2 cell1 3
+write 0x54292F042 cell1 4
+write 0x292904042 cell1 5
+write 0x10C1C1B cell1 6
+write 0x1096C1B cell1 7
+write -1 cell1 8
+/
+# --- Companion Index / View Navigation
+set canCastDAM true
+set minDAM 0
+set maxDAM 1
+read menuIndex cell2 60
+jump noNeedToCount equal menuIndex 5
+fun have countCompanionTypeStats
+noNeedToCount:
+write 1 cell4 0
+write 0x6441AAE6 cell1 2
+write 3 cell1 3
+write 0x482824042 cell1 4
+write 0x485424302 cell1 5
+write 0x185406042 cell1 6
+write -1 cell1 7
+/
+# --- Companion Management
+write 0x6441AAE6 cell1 2
+write 2 cell1 3
+write 0x54292F042 cell1 4
+write 0x292904042 cell1 5
+write 0x50543E2C2 cell1 6
+write 0x3554232C2 cell1 7
+write 0x1A54082C2 cell1 8
+write -1 cell1 9
+/
+# --- About Back Button
+write 0x355423042 cell1 4
+write -1 cell1 5
+/
+# --- Companion Box Right Side
+write 0x52543A442 cell1 4
+write 0x1E5406442 cell1 5
+write 0x8AC4C3 cell1 6
+write -1 cell1 7
+/
+# --- Battle Main Screen
+write 0x9B86BD2E cell1 2
+write 3 cell1 3
+write 0x54D442842 cell1 4
+write 0x3FD42D842 cell1 5
+write -1 cell1 6
+write -1 cell1 7
+read battleType cell3 18
+jump noCatchNoFlee equal battleType 2
+write 0x2AD418842 cell1 6
+write 0x15D403842 cell1 7
+noCatchNoFlee:
+write -1 cell1 8
+/
+# --- Battle Moves Screen
+write 0x54D444842 cell1 4
+write 0x425432042 cell1 5
+write 0x2FD41F842 cell1 6
+write 0x1D540D042 cell1 7
+write 0x9D403842 cell1 8
+write -1 cell1 9
+/
+# --- Battle Companions Screen
+write 0x52AAC082A cell1 4
+write 0x52D5C0ADA cell1 5
+write 0x3E2AAC02A cell1 6
+write 0x3E55AC2DA cell1 7
+write 0x29AA9782A cell1 8
+write 0x29D597ADA cell1 9
+write 0x12D58382A cell1 10
+write -1 cell1 11
+/
+# --- Battle Force Switch
+write 0x52AAC082A cell1 4
+write 0x52D5C0ADA cell1 5
+write 0x3E2AAC02A cell1 6
+write 0x3E55AC2DA cell1 7
+write 0x29AA9782A cell1 8
+write 0x29D597ADA cell1 9
+write -1 cell1 10
+/
+# --- Turn Report
+write 0x57D78080A cell1 4
+write -1 cell1 5
+/
+# --- Heal Message
+write 0x57D78080A cell1 4
+write -1 cell1 5
+/
+# --- Learn Move Menu
+write 0x54D444842 cell1 4
+write 0x425432042 cell1 5
+write 0x2FD41F842 cell1 6
+write 0x1D540D042 cell1 7
+write 0x9D403842 cell1 8
+write -1 cell1 9
+/
+# --- Evolution Menu
+write 0x2AD418842 cell1 4
+write 0x15D403842 cell1 5
+write -1 cell1 6
+//
+finishPuttingMoveRegions:
+write -1 cell1 58
+fun have update
+fun close

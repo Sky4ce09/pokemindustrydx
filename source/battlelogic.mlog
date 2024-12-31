@@ -1,0 +1,984 @@
+# battlelogic.mlog
+
+spl new companions1 MapCompanion 7:id 7:level 28:moves
+spl new companions1 C1 14 * 3
+spl new companions2 C2 14 * 3
+spl new learnsetMove LearnsetMove 7:id 7:level
+spl new learnsetSegment LearnsetSegment 14 * 3
+spl new databaseCompanion DatabaseCompanion 8:types 6:healthScalar 6:speed 6:pAtk 6:pDef 6:eAtk 6:eDef 6:expRewardScalar
+spl new moveset Moveset 7 * 4
+spl new floorColors FloorColors 8 * 6
+spl new wallColors WallColors 8 * 6
+spl new move Move 4:type 3:eff1 7:val1 7:acc1 3:eff2 7:val2 7:acc2
+spl new playerMoveData PlayerMoveData 4:type 3:eff1 7:val1 7:acc1 3:eff2 7:val2 7:acc2
+spl new enemyMoveData EnemyMoveData 4:type 3:eff1 7:val1 7:acc1 3:eff2 7:val2 7:acc2
+spl new dex Dex 2 * 24
+spl new contributors Contributors 1 * 6
+
+expect bank1 cell1 cell2 cell3 cell4 cell5 cell6
+set mainInterface cell1
+set battleInterface cell2
+set moveDatabase cell3
+set touchInterfaceDisplay cell4
+set touchInterfaceDpad cell5
+set messageInterface cell6
+set companionDatabase bank1
+
+write -1 battleInterface 41
+write -1 battleInterface 42
+set readingActionFromMainBattle true
+
+ultimateLoop:
+fun have mainLoopHead equal readingActionFromMainBattle true
+fun have mainLoopBase
+fun have checkMessageClickaway equal displayingMessage true
+fun have checkLearnStatus equal learning true
+fun have checkEvolveStatus equal evolving true
+jump ultimateLoop
+
+fun new mainLoopHead
+read actionType battleInterface 41
+fun have processAction greaterThan actionType -1
+fun close
+
+fun new mainLoopBase
+radar player ally any distance hail1 1 p
+set pvs s
+sensor s p @shooting
+sensor x p @shootX
+sensor y p @shootY
+jump writeCoords notEqual s true
+jump delayedAutoMovement notEqual pvs false
+write 1 touchInterfaceDisplay 60
+write 1 touchInterfaceDpad 60
+op add damTimer @time 500
+jump writeCoords
+delayedAutoMovement:
+jump writeCoords lessThan @time damTimer
+write 2 touchInterfaceDpad 60
+op add damTimer @time 150
+writeCoords:
+write x cell4 61
+write x cell5 61
+write y cell4 62
+write y cell5 62
+fun close
+
+fun new checkLearnStatus
+read midturnStatus battleInterface 47
+jump noChange1 equal midturnStatus 2
+set learning false
+jump backFromLearning
+noChange1:
+fun close
+
+fun new checkEvolveStatus
+read midturnStatus battleInterface 47
+jump noChange2 equal midturnStatus 3
+set evolving false
+jump backFromEvolving
+noChange2:
+fun close
+
+causeLearning:
+cooldownBeforeChange:
+jump cooldownBeforeChange lessThan @time changeTimer
+write levelUpsByIndex battleInterface 49
+write 2 battleInterface 47
+set learning true
+jump ultimateLoop
+
+causeEvolving:
+write totalLevelUpsByIndex battleInterface 49
+write 3 battleInterface 47
+set evolving true
+jump ultimateLoop
+
+fun new processAction
+op add changeTimer @time 500
+set sendMessage true
+set messageType 0
+set failCondition false
+read playerCompanionIndex battleInterface 43
+spl wd- 1 Contributors playerCompanionIndex
+read action battleInterface 42
+parr actionType
+# --- Catch or Flee
+set statusTurn false
+read battleType battleInterface 18
+op equal failCondition battleType 2
+op sub sendMessage 1 failCondition
+jump skipTurnReportMessage equal failCondition true
+parr action
+# Catch
+read companionCount mainInterface 42
+op equal failCondition companionCount 6
+jump teamIsNotFull equal failCondition false
+set message 0
+fun have turnReportMessage
+jump postProcess
+teamIsNotFull:
+read companionID battleInterface 27
+op mod companionID' companionID 0b10000000
+read databaseCompanion companionDatabase companionID'
+spl of catchRate DatabaseCompanion expRewardScalar
+op pow catchRate catchRate 2
+op div catchRate catchRate 325
+op add catchRate catchRate 4
+read companionHealth battleInterface 29
+op mod health companionHealth 0b10000000000
+op idiv maxHealth companionHealth 0b10000000000
+op div healthQuotient health maxHealth
+op sub subtract 1 healthQuotient
+op pow subtract subtract 2
+op mul subtract subtract 3
+op sub catchRate catchRate subtract
+op pow healthQuotient healthQuotient 1.618
+op mul add healthQuotient 0.15
+op add finalMultiplier 0.85 add
+op mul catchRate catchRate finalMultiplier
+op rand catchRoll 4
+op pow catchRoll catchRoll 2
+op lessThan failCondition catchRoll catchRate
+jump catchSuccess equal failCondition false
+set message 1
+fun have turnReportMessage
+fun have runEnemyMove
+jump postProcess
+
+catchSuccess:
+op mul newCompanionIDIndex companionCount 7
+op add companionCount companionCount 1
+write companionCount mainInterface 42
+op add newCompanionTypesIndex newCompanionIDIndex 1
+op add newCompanionHealthIndex newCompanionIDIndex 2
+op add newCompanionLevelIndex newCompanionIDIndex 3
+op add newCompanionExpIndex newCompanionIDIndex 4
+op add newCompanionExpMaxIndex newCompanionIDIndex 5
+op add newCompanionMovesIndex newCompanionIDIndex 6
+op idiv companionTypes companionID 0b10000000
+write companionID' mainInterface newCompanionIDIndex
+write companionTypes mainInterface newCompanionTypesIndex
+read health battleInterface 29
+write health mainInterface newCompanionHealthIndex
+read levelStatus battleInterface 28
+write levelStatus mainInterface newCompanionLevelIndex
+op mod companionLevel levelStatus 0b10000000
+fun have computeMaxExperience
+write 0 mainInterface newCompanionExpIndex
+write expMax mainInterface newCompanionExpMaxIndex
+set moveset 0
+read move battleInterface 30
+spl wf- move Moveset 0
+read move battleInterface 31
+spl wf- move Moveset 1
+read move battleInterface 32
+spl wf- move Moveset 2
+read move battleInterface 33
+spl wf- move Moveset 3
+write moveset mainInterface newCompanionMovesIndex
+
+op mod dexSegment companionID' 24
+op idiv dexSlot companionID' 24
+op add dexSlot dexSlot 34
+read dex battleInterface dexSlot
+spl wd- 3 Dex dexSegment # seen and caught
+write dex battleInterface dexSlot
+set message 2
+set companionIDm companionID
+set companionLevelm companionLevel
+fun have turnReportMessage
+/
+# Flee
+set playerStatusModifier 1
+set enemyStatusModifier 1
+read playerCompanionID battleInterface 20
+read playerCompanionLevel battleInterface 21
+op mod playerCompanionID playerCompanionID 0b10000000
+op idiv playerCompanionStatus playerCompanionLevel 0b10000000
+op mod playerCompanionLevel playerCompanionLevel 0b10000000
+read databaseCompanion companionDatabase playerCompanionID
+jump skipFleeStatus1 notEqual playerCompanionStatus 1
+set playerStatusModifier 0.75
+skipFleeStatus1:
+spl of playerSpeed DatabaseCompanion speed
+op mul playerSpeed playerSpeed playerCompanionLevel
+op mul playerSpeed playerSpeed playerStatusModifier
+read enemyCompanionID battleInterface 27
+read enemyCompanionLevel battleInterface 28
+op mod enemyCompanionID enemyCompanionID 0b10000000
+op idiv enemyCompanionStatus enemyCompanionLevel 0b10000000
+op mod enemyCompanionLevel enemyCompanionLevel 0b10000000
+read databaseCompanion companionDatabase enemyCompanionID
+jump skipFleeStatus2 notEqual enemyCompanionStatus 1
+set enemyStatusModifier 0.75
+skipFleeStatus2:
+spl of enemySpeed DatabaseCompanion speed
+op mul enemySpeed enemySpeed enemyCompanionLevel
+op mul enemySpeed enemySpeed enemyStatusModifier
+op div speedQuotient enemySpeed playerSpeed
+op rand fleeRoll 2.4
+op add fleeRoll fleeRoll 0.6
+op lessThan failCondition fleeRoll speedQuotient
+jump fleeConditionFailureMessage equal failCondition true
+set message 22
+jump writeFleeReport
+fleeConditionFailureMessage:
+set message 3
+writeFleeReport:
+fun have turnReportMessage
+fun have runEnemyMove equal failCondition true
+//
+/
+# --- Use Move
+fun have handleTurn
+/
+# --- Switch Companion
+jump switchCompanions
+/
+# --- Force Switch Companion
+jump switchCompanions
+//
+jump postProcess
+
+switchCompanions:
+set statusTurn false
+read playerFightingCompanionIndex battleInterface 43
+op equal failCondition playerFightingCompanionIndex action
+op sub sendMessage 1 failCondition
+jump postProcess equal failCondition true
+read playerCompanionCount mainInterface 42
+op greaterThanEq failCondition action playerCompanionCount
+op sub sendMessage 1 failCondition
+jump postProcess equal failCondition true
+op mul statsIndexTeam action 7
+op add typesIndexTeam statsIndexTeam 1
+op add healthIndexTeam statsIndexTeam 2
+op add statusIndexTeam statsIndexTeam 3
+op add movesetIndexTeam statsIndexTeam 6
+read healthStatsTeam mainInterface healthIndexTeam
+read statusTeam mainInterface statusIndexTeam
+op mod health healthStatsTeam 0b10000000000
+op equal failCondition health 0
+op sub sendMessage 1 failCondition
+jump postProcess equal failCondition true
+write statusTeam battleInterface 21
+write healthStatsTeam battleInterface 22
+read id mainInterface statsIndexTeam
+read types mainInterface typesIndexTeam
+set message 23
+set companionIDm id
+op equal sendMessage actionType 2
+fun have turnReportMessage equal actionType 2
+op shl types types 7
+op add id id types
+write id battleInterface 20
+read moveset mainInterface movesetIndexTeam
+spl of move1 Moveset 0
+spl of move2 Moveset 1
+spl of move3 Moveset 2
+spl of move4 Moveset 3
+write move1 battleInterface 23
+write move2 battleInterface 24
+write move3 battleInterface 25
+write move4 battleInterface 26
+write action battleInterface 43
+spl wd- 1 Contributors action
+fun have midTurnRender
+fun have runEnemyMove equal actionType 2
+
+postProcess:
+fun have countExperienceReceivers
+op notEqual heck companionsRemaining 0
+op mul contributors contributors heck
+
+jump skipTurnReportMessage equal sendMessage false
+fun have midTurnRender
+finalRenderWait:
+jump finalRenderWait lessThan @time renderCooldownTimer
+write -1 messageInterface messageIndex
+write messageType messageInterface 63
+waitForMessageTransmission:
+read messageTransmitted messageInterface 63
+jump waitForMessageTransmission notEqual messageTransmitted -1
+write 11 touchInterfaceDpad 58
+fun have awaitTouchscreenLibReadyStatus
+set messageIndex 0
+set readingActionFromMainBattle false
+set displayingMessage true
+write -1 touchInterfaceDpad 59
+jump ultimateLoop
+
+returnFromMessageClickaway:
+write -1 touchInterfaceDpad 59
+set displayingMessage false
+set readingActionFromMainBattle true
+skipTurnReportMessage:
+op sub failCondition' failCondition 1
+write failCondition' battleInterface 44
+write -1 battleInterface 42
+write -1 battleInterface 41
+fun close
+
+fun new getRandomEnemyMoveIndex
+set enemyMoveCount 0
+for enemyMoveIndex = 30 <= 33 1
+read enemyMove battleInterface enemyMoveIndex
+jump finishCountingEnemyMoves equal enemyMove 0
+op add enemyMoveCount enemyMoveCount 1
+next
+finishCountingEnemyMoves:
+op rand enemyMoveIndex enemyMoveCount
+op add enemyMoveIndex enemyMoveIndex 30
+op floor enemyMoveIndex enemyMoveIndex
+fun close
+
+fun new runEnemyMove # more like process remainder of the turn
+fun have getRandomEnemyMoveIndex
+set isEnemyMove true
+fun have useMove
+set statusTurn true
+set isEnemyMove false
+fun have applyMeltingDamage
+set isEnemyMove true
+fun have applyMeltingDamage
+fun close
+
+fun new handleTurn
+op add playerMoveIndex action 23
+read playerMove battleInterface playerMoveIndex
+op notEqual sendMessage playerMove 0
+op sub failCondition 1 sendMessage
+jump endTurn equal failCondition true
+fun have getRandomEnemyMoveIndex
+read playerCompanionID battleInterface 20
+op mod playerCompanionID playerCompanionID 0b10000000
+read playerLevel battleInterface 21
+op idiv playerStatus playerLevel 0b10000000
+jump reduceSpeed1 equal playerStatus 1
+set playerStatusSpeed 1
+jump combineSpeed1 notEqual playerStatus 1
+reduceSpeed1:
+set playerStatusSpeed 0.75
+combineSpeed1:
+op mod playerLevel playerLevel 0b10000000
+op add playerLevel' playerLevel 3
+read databaseCompanion companionDatabase playerCompanionID
+spl of playerSpeed DatabaseCompanion speed
+op mul playerEffectiveSpeed playerSpeed playerLevel'
+op mul playerEffectiveSpeed playerEffectiveSpeed playerStatusSpeed
+
+read enemyCompanionID battleInterface 27
+op mod enemyCompanionID enemyCompanionID 0b10000000
+read enemyLevel battleInterface 28
+op idiv enemyStatus enemyLevel 0b10000000
+jump reduceSpeed2 equal enemyStatus 1
+set enemyStatusSpeed 1
+jump combineSpeed2 notEqual enemyStatus 1
+reduceSpeed2:
+set enemyStatusSpeed 0.75
+combineSpeed2:
+op mod enemyLevel enemyLevel 0b10000000
+op add enemyLevel' enemyLevel 3
+read databaseCompanion companionDatabase enemyCompanionID
+spl of enemySpeed DatabaseCompanion speed
+op mul enemyEffectiveSpeed enemySpeed enemyLevel'
+op mul enemyEffectiveSpeed enemyEffectiveSpeed enemyStatusSpeed
+
+read enemyMove battleInterface enemyMoveIndex
+op sub playerMove' playerMove 1
+op sub enemyMove' enemyMove 1
+read playerMoveData moveDatabase playerMove'
+read enemyMoveData moveDatabase enemyMove'
+spl of playerMoveEffect PlayerMoveData eff1
+spl of enemyMoveEffect EnemyMoveData eff1
+op equal playerPriority playerMoveEffect 3
+op equal playerPriority' playerMoveEffect 4
+op equal enemyPriority enemyMoveEffect 3
+op equal enemyPriority' enemyMoveEffect 4
+op add playerPriority playerPriority playerPriority'
+op add enemyPriority enemyPriority enemyPriority'
+jump enemyFirst greaterThan enemyPriority playerPriority
+jump playerFirst greaterThan playerPriority enemyPriority
+jump enemyFirst greaterThan enemyEffectiveSpeed playerEffectiveSpeed
+jump playerFirst greaterThan playerEffectiveSpeed enemyEffectiveSpeed
+op rand coinflip 2
+jump enemyFirst lessThan coinflip 1
+
+playerFirst:
+set statusTurn false
+set isEnemyMove false
+fun have useMove
+set isEnemyMove true
+fun have useMove
+set statusTurn true
+set isEnemyMove false
+fun have applyMeltingDamage
+set isEnemyMove true
+fun have applyMeltingDamage
+jump endTurn
+enemyFirst:
+set statusTurn false
+set isEnemyMove true
+fun have useMove
+set isEnemyMove false
+fun have useMove
+set statusTurn true
+set isEnemyMove true
+fun have applyMeltingDamage
+set isEnemyMove false
+fun have applyMeltingDamage
+endTurn:
+fun close
+
+fun new applyMeltingDamage
+parr isEnemyMove
+read meltingStatus battleInterface 21
+/
+read meltingStatus battleInterface 28
+//
+op idiv meltingStatus meltingStatus 0b10000000
+jump unnecessaryMelting notEqual meltingStatus 2
+op mul indexShift isEnemyMove 7
+op sub indexShift' 7 indexShift
+op add idIndex 20 indexShift
+read companionIDm battleInterface idIndex # for messages
+op add healthIndex 22 indexShift
+op add healthIndex' 22 indexShift'
+read healthStats battleInterface healthIndex'
+op mod health healthStats 1024
+jump unnecessaryMelting equal health 0 # enemy fainted, don't melt
+read healthStats battleInterface healthIndex
+op mod health healthStats 1024
+jump unnecessaryMelting equal health 0 # you fainted, don't melt
+op div tenthMaxHealth healthStats 10240
+op ceil tenthMaxhealth tenthMaxHealth
+op sub health health tenthMaxHealth
+op max health health 0
+op floor health health
+op and healthStats healthStats 0b11111111110000000000
+op add healthStats healthStats health
+write healthStats battleInterface healthIndex
+op add message 20 isEnemyMove
+fun have turnReportMessage
+fun have faintMessage equal health 0
+fun have updateLocalStatus
+unnecessaryMelting:
+fun close
+
+fun new faintMessage
+fun have updateLocalStatus
+parr statusTurn
+op sub message 13 isEnemyMove
+set companionIDm defenderID
+fun have turnReportMessage
+fun have grantExperience equal isEnemyMove false
+/
+# companionIDm is always set to statusDamageID when reaching this point
+op add message 12 isEnemyMove
+fun have turnReportMessage
+fun have grantExperience equal isEnemyMove true
+//
+fun close
+
+fun new grantExperience
+spl new levelUpsByIndex LevelUpsByIndex 7 * 6
+spl new totalLevelUpsByIndex TotalLevelUpsByIndex 7 * 6
+read fightingCompanionIndex battleInterface 43
+set levelUpsByIndex 0
+read companionID battleInterface 27
+read companionLevel battleInterface 28
+op mod companionID companionID 0b10000000
+op mod companionLevel companionLevel 0b10000000
+read databaseCompanion companionDatabase companionID
+spl of expRewardScalar DatabaseCompanion expRewardScalar
+fun have computeExperienceReward
+set opponentCompanionLevel companionLevel
+read ownCompanionLevel battleInterface 21
+op mod ownCompanionLevel ownCompanionLevel 0b10000000
+fun have scaleExperienceReward
+read sharingMechanism mainInterface 51
+
+parr sharingMechanism
+fun have countExperienceReceivers
+op div expReward expReward companionsContributing
+op ceil expReward expReward
+for i = 0 < companionCount 1
+spl od isHealthyContributor Contributors i
+fun have grantLevels equal isHealthyContributor 1
+next
+/
+fun have countExperienceReceivers
+op div expReward expReward companionsRemaining
+op ceil expReward expReward
+for i = 0 < companionCount 1
+op mul expCompanionHealthIndex i 7
+op add expCompanionHealthIndex expCompanionHealthIndex 2
+read expCompanionHealth mainInterface expCompanionHealthIndex
+op mod expCompanionHealth expCompanionHealth 0b10000000000
+fun have grantLevels greaterThan expCompanionHealth 0
+next
+/
+isOnlyCompanion:
+set i fightingCompanionIndex
+fun have grantLevels
+//
+set sharingMechanism false
+set readingActionFromMainBattle false
+jump causeLearning notEqual levelUpsByIndex 0
+backFromLearning:
+read opponentCompanionCount battleInterface 19
+op sub opponentCompanionCount opponentCompanionCount 1
+write opponentCompanionCount battleInterface 19
+jump battleNotDone greaterThan opponentCompanionCount 0
+jump causeEvolving notEqual totalLevelUpsByIndex 0
+backFromEvolving:
+set totalLevelUpsByIndex 0
+battleNotDone:
+set contributors 0
+set readingActionFromMainBattle true
+fun close
+
+fun new grantLevels
+op mul companionIDIndex i 7
+op add companionHealthIndex companionIDIndex 2
+op add companionLevelIndex companionIDIndex 3
+op add companionExperienceIndex companionIDIndex 4
+op add companionMaxExperienceIndex companionIDIndex 5
+read companionHealthThen mainInterface companionHealthIndex
+op idiv companionMaxHealthThen companionHealthThen 0b10000000000
+op mod companionHealthThen companionHealthThen 0b10000000000
+read companionLevel mainInterface companionLevelIndex
+op and statusPreserve companionLevel 0b110000000
+op mod companionLevel companionLevel 0b010000000
+set companionLevelThen companionLevel
+read exp mainInterface companionExperienceIndex
+read expMax mainInterface companionMaxExperienceIndex
+op add exp exp expReward
+op ceil exp exp
+jump noLevelUp greaterThan expMax exp
+jump noLevelUp equal companionLevel 100
+
+startLevelUp:
+op sub exp exp expMax
+op add companionLevel companionLevel 1
+fun have computeMaxExperience
+jump stopLevelUp equal companionLevel 100
+jump startLevelUp greaterThanEq exp expMax
+
+stopLevelUp:
+op add companionLevelWrite companionLevel statusPreserve
+write companionLevelWrite mainInterface companionLevelIndex
+jump levelerIsNotInBattle1 notEqual i fightingCompanionIndex
+write companionLevelWrite battleInterface 21
+levelerIsNotInBattle1:
+op mod exp exp 0b100000000000000000
+op floor exp exp
+write expMax mainInterface companionMaxExperienceIndex
+read companionID mainInterface companionIDIndex
+fun have getHealthAndTypes
+op mod newMaxHealth maxHealth 0b10000000000
+op sub healthDelta newMaxHealth companionMaxHealthThen
+op add newHealth companionHealthThen healthDelta
+op and maxHealth maxHealth 0b11111111110000000000
+op add newHealthTotal maxHealth newHealth
+write newHealthTotal mainInterface companionHealthIndex
+jump levelerIsNotInBattle2 notEqual i fightingCompanionIndex
+write newHealthTotal battleInterface 22
+levelerIsNotInBattle2:
+
+op sub levelDelta companionLevel companionLevelThen
+spl wd- levelDelta LevelUpsByIndex i
+spl od battleTotalLevelUps TotalLevelUpsByIndex i
+op add battleTotalLevelUps battleTotalLevelUps levelDelta
+spl wd battleTotalLevelUps TotalLevelUpsByIndex i
+
+noLevelUp:
+write exp mainInterface companionExperienceIndex
+fun close
+
+fun new countExperienceReceivers
+set companionsRemaining 0
+set companionsContributing 0
+set healthIndex 2
+read companionCount mainInterface 42
+for i = 0 < companionCount 1
+read healthStats mainInterface healthIndex
+op mod health healthStats 0b10000000000
+op notEqual canFight health 0
+op add companionsRemaining companionsRemaining canFight
+spl od isContributor Contributors i
+op add isBothHealthyAndContributor canFight isContributor
+op equal isBothHealthyAndContributor isBothHealthyAndContributor 2
+spl wd isBothHealthyAndContributor Contributors i
+op add companionsContributing companionsContributing isBothHealthyAndContributor
+counted:
+op add healthIndex healthIndex 7
+next
+fun close
+
+fun new useMove # isEnemyMove
+jump useEnemyIndices equal isEnemyMove true
+set attackerTypeIndex 20
+set attackerStatusIndex 21
+set attackerHealthIndex 22
+set attackerMoveIndex 23
+set defenderIDIndex 27
+set defenderStatusIndex 28
+set defenderHealthIndex 29
+set storeAction action
+jump continueUsingMove
+useEnemyIndices:
+set attackerTypeIndex 27
+set attackerStatusIndex 28
+set attackerHealthIndex 29
+set attackerMoveIndex enemyMoveIndex
+set defenderIDIndex 20
+set defenderStatusIndex 21
+set defenderHealthIndex 22
+set storeAction 0
+continueUsingMove:
+read attackerHealth battleInterface attackerHealthIndex
+op mod attackerHealth attackerHealth 0b10000000000
+jump invalidMove equal attackerHealth 0
+read defenderHealth battleInterface defenderHealthIndex
+read attackerIDAndTypes battleInterface attackerTypeIndex
+op mod attackerID attackerIDAndTypes 0b10000000
+op shr attackerTypes attackerIDAndTypes 7
+op mod attackerType1 attackerTypes 0b10000
+op idiv attackerType2 attackerTypes 0b10000
+op add attackerMoveIndex storeAction attackerMoveIndex
+read moveID battleInterface attackerMoveIndex
+jump invalidMove equal moveID 0
+op sub moveID' moveID 1
+read move moveDatabase moveID'
+
+op add message 4 isEnemyMove
+set companionIDm attackerID
+set moveIDm moveID
+fun have turnReportMessage
+
+spl of attackingType Move type
+set stab 1.275
+jump preserve equal attackingType attackerType1
+jump preserve equal attackingType attackerType2
+set stab 1
+
+preserve:
+read attackerStatus battleInterface attackerStatusIndex
+op mod attackerLevel attackerStatus 0b10000000
+op idiv attackerStatus attackerStatus 0b10000000
+op equal isElectrified attackerStatus 1
+op mul electrification -0.25 isElectrified
+op add chanceToMove 1 electrification
+op rand electrificationCriterium 1
+jump electrified greaterThanEq electrificationCriterium chanceToMove
+read defenderStatusFull battleInterface defenderStatusIndex
+op mod defenderLevel defenderStatusFull 0b10000000
+read types battleInterface defenderIDIndex
+op mod defenderID types 0b10000000
+op shr types types 7
+op mod defendingType types 0b10000
+fun have getEffectivity
+op mul effectivity' effectivity 2
+op add @counter @counter effectivity'
+set e 0
+jump effectivity1
+op div e 6 10
+jump effectivity1
+set e 1
+jump effectivity1
+op div e 10 6
+effectivity1:
+op idiv defendingType types 0b10000
+jump skipSecondTypeEffectivity equal defendingType 0
+fun have getEffectivity
+op mul effectivity' effectivity 2
+op add @counter @counter effectivity'
+set e' 0
+jump effectivity2
+op div e' 6 10
+jump effectivity2
+set e' 1
+jump effectivity2
+op div e' 10 6
+effectivity2:
+op mul e e e'
+skipSecondTypeEffectivity:
+jump immune equal e 0
+spl of effect Move eff1
+spl of value Move val1
+spl of accuracy Move acc1
+op rand missCriterium 100
+jump miss greaterThan missCriterium accuracy
+fun have processEffect
+spl of effect Move eff2
+jump endMove equal effect 0
+spl of value Move val2
+spl of accuracy Move acc2
+op rand unaffectedCriterium 100
+jump noAffect greaterThan unaffectedCriterium accuracy
+fun have processEffect
+jump endMove
+miss:
+op sub message 7 isEnemyMove
+set companionIDm defenderID
+fun have turnReportMessage
+jump endMove
+electrified:
+op add message 18 isEnemyMove
+set companionIDm attackerID
+fun have turnReportMessage
+jump endMove
+immune:
+set message 8
+set companionIDm defenderID
+fun have turnReportMessage
+jump endMove
+invalidMove:
+noAffect:
+endMove:
+fun close
+
+fun new processEffect
+parr effect
+/
+fun have applyPhysicalDamage
+/
+fun have applyElectricDamage
+/
+fun have applyPhysicalDamage
+/
+fun have applyElectricDamage
+/
+set status 1
+fun have applyStatus
+/
+set status 2
+fun have applyStatus
+//
+fun have midTurnRender equal statusFailure false
+set statusFailure false
+fun have updateLocalStatus equal isEnemyMove true
+fun close
+
+fun new applyPhysicalDamage
+op add attackerLevel' attackerLevel 2
+op add defenderLevel' defenderLevel 2
+read databaseCompanion companionDatabase defenderID
+spl of pDef DatabaseCompanion pDef
+op add pDef' pDef 8
+op mul defense pDef' defenderLevel'
+read databaseCompanion companionDatabase attackerID
+spl of pAtk DatabaseCompanion pAtk
+op add pAtk' pAtk 8
+op mul attack pAtk' attackerLevel'
+fun have applyDamage
+fun close
+
+fun new applyElectricDamage
+op add attackerLevel' attackerLevel 2
+op add defenderLevel' defenderLevel 2
+read databaseCompanion companionDatabase defenderID
+spl of eDef DatabaseCompanion eDef
+op add eDef' eDef 10
+op mul defense eDef' defenderLevel'
+read databaseCompanion companionDatabase attackerID
+spl of eAtk DatabaseCompanion eAtk
+op add eAtk' eAtk 10
+op mul attack eAtk' attackerLevel'
+fun have applyDamage
+fun close
+
+fun new applyDamage
+spl new defenderHealth DefenderHealth 10 * 2 0:health 1:maxHealth
+spl of health DefenderHealth health
+op div ratio attack defense
+op mul attackerLevelScalar attackerLevel 3
+op rand randomFactor 0.15
+op add randomFactor randomFactor 0.85
+op mul power ratio value
+op mul power power attackerLevelScalar
+op mul power power stab
+op mul power power e
+op mul power power randomFactor
+op div power power 140
+op add power power 0.5
+op ceil power power
+op equal isMelting attackerStatus 2
+op mul statusMultiplier -0.3 isMelting
+op add statusMultiplier statusMultiplier 1
+op mul power power statusMultiplier
+op sub newHealth health power
+op floor newHealth newHealth
+op max newHealth newHealth 0
+spl wf newHealth DefenderHealth health
+write defenderHealth battleInterface defenderHealthIndex
+set companionIDm defenderID
+jump ineffectiveMessage lessThan e 1
+jump superEffectiveMessage greaterThan e 1
+jump noEffectivityMessage
+ineffectiveMessage:
+set message 9
+jump closeEffectivityMessage
+superEffectiveMessage:
+set message 10
+closeEffectivityMessage:
+fun have turnReportMessage
+noEffectivityMessage:
+jump alreadyFainted equal health 0
+fun have faintMessage equal newHealth 0
+alreadyFainted:
+fun close
+
+fun new applyStatus
+spl new defenderStatusFull DefenderStatus 7:level 2:status
+spl of previousStatus DefenderStatus status
+jump failApplyStatus notEqual previousStatus 0
+spl wf status DefenderStatus status
+write defenderStatusFull battleInterface defenderStatusIndex
+op mul messageOffset status 2
+op sub messageOffset messageOffset isEnemyMove
+op add message 13 messageOffset
+set companionIDm defenderID
+fun have turnReportMessage
+jump endApplyStatus
+failApplyStatus:
+set statusFailure true
+endApplyStatus:
+fun close
+
+fun new getEffectivity # attackingType, defendingType
+spl new defendingTypeChart DefendingTypeChart 2 * 14
+#op sub attackingType' attackingType 1
+op sub defendingType' 14 defendingType
+op mul attackingType' attackingType 2
+op add @counter @counter attackingType'
+set defendingTypeChart 0b1011011010011010101111101001
+jump doneAcquiringDefendingTypeChart
+set defendingTypeChart 0b1001110111101101101010101010
+jump doneAcquiringDefendingTypeChart
+set defendingTypeChart 0b1010011010101011010110100110
+jump doneAcquiringDefendingTypeChart
+set defendingTypeChart 0b1010100010101110010110101111
+jump doneAcquiringDefendingTypeChart
+set defendingTypeChart 0b1110101001011010101110101110
+jump doneAcquiringDefendingTypeChart
+set defendingTypeChart 0b1010101011011011101000100110
+jump doneAcquiringDefendingTypeChart
+set defendingTypeChart 0b1010101110100110011001101100
+jump doneAcquiringDefendingTypeChart
+set defendingTypeChart 0b1010101010110110101010101011
+jump doneAcquiringDefendingTypeChart
+set defendingTypeChart 0b1010011110101010010110111010
+jump doneAcquiringDefendingTypeChart
+set defendingTypeChart 0b0110101001101011111010101010
+jump doneAcquiringDefendingTypeChart
+set defendingTypeChart 0b1010101010101110011001100110
+jump doneAcquiringDefendingTypeChart
+set defendingTypeChart 0b1010011010101010011010101010
+jump doneAcquiringDefendingTypeChart
+set defendingTypeChart 0b1010101011100110101110101000
+jump doneAcquiringDefendingTypeChart
+set defendingTypeChart 0b1001101010101110101101101010
+doneAcquiringDefendingTypeChart:
+spl od effectivity DefendingTypeChart defendingType'
+fun close
+
+fun new getHealthAndTypes # companionID, companionLevel
+read databaseCompanion companionDatabase companionID
+spl of types DatabaseCompanion types
+spl of healthScalar DatabaseCompanion healthScalar
+op add healthScalar' healthScalar 20
+op mul maxHealth companionLevel healthScalar'
+op idiv maxHealth maxHealth 10
+op add maxHealth maxHealth 5
+op shl maxHealth' maxHealth 10
+op add maxHealth maxHealth maxHealth'
+fun close
+
+fun new computeMaxExperience # companionLevel
+op pow component companionLevel 2.42
+op mul fourxlevel companionLevel 4
+op add expMax component fourxlevel
+op add expMax expMax 10
+op floor expMax expMax
+fun close
+
+fun new computeExperienceReward # companionLevel, expRewardScalar
+fun have computeMaxExperience
+op div expReward expMax 200
+op mul expReward expReward expRewardScalar
+op pow component companionLevel 1.5
+op mul component component 5
+op add component component 10
+op add expReward expReward component
+read battleType battleInterface 18
+parr battleType
+# grass, don't change
+/
+op mul expReward expReward 1.25 # mapcompanion
+/
+op mul expReward expReward 1.5 # trainer
+//
+# op mul expReward expReward 100 # for testing
+op floor expReward expReward
+fun close
+
+fun new scaleExperienceReward # expReward, ownCompanionLevel, opponentCompanionLevel
+op add ownCompanionLevel' ownCompanionLevel 2
+op add opponentCompanionLevel' opponentCompanionLevel 2
+op pow ownCompanionLevel' ownCompanionLevel' 0.5
+op pow opponentCompanionLevel' opponentCompanionLevel' 0.5
+op div levelDifferenceScalar opponentCompanionLevel' ownCompanionLevel'
+op pow levelDifferenceScalar levelDifferenceScalar 1.25
+op min levelDifferenceScalar levelDifferenceScalar 1.2
+op max levelDifferenceScalar levelDifferenceScalar 0.35
+op mul expReward expReward levelDifferenceScalar
+fun close
+
+fun new checkMessageClickaway
+read action touchInterfaceDpad 59
+jump returnFromMessageClickaway notEqual action -1
+fun close
+
+fun new awaitTouchscreenLibReadyStatus
+waitForTouchscreenLibToGetReady:
+read ready touchInterfaceDpad 58
+jump waitForTouchscreenLibToGetReady notEqual ready -1
+write -1 touchInterfaceDpad 59
+fun close
+
+fun new turnReportMessage # message (text), (companionIDm, companionLevelm, moveIDm)
+spl new message Message 5 7 7 7
+spl wf companionIDm Message 1
+spl wf companionLevelm Message 2
+spl wf moveIDm Message 3
+write message messageInterface messageIndex
+op add messageIndex messageIndex 1
+fun close
+
+fun new midTurnRender
+renderCooldown:
+jump renderCooldown lessThan @time renderCooldownTimer
+read stillRendering battleInterface 47
+jump renderCooldown equal stillRendering 1
+op add renderCooldownTimer @time 300
+op add changeTimer @time 500
+write 0 battleInterface 48
+write 1 battleInterface 47
+gainVisualData:
+read gained battleInterface 48
+jump gainVisualData equal gained 0
+fun close
+
+fun new updateLocalStatus
+read localCurrentlyFightingCompanionIndex battleInterface 43
+op mul localMainIndex localCurrentlyFightingCompanionIndex 7
+op add localHealthIndex localMainIndex 2
+op add localStatusIndex localMainIndex 3
+read localStatus battleInterface 21
+read localHealth battleInterface 22
+write localHealth mainInterface localHealthIndex
+write localStatus mainInterface localStatusIndex
+fun close

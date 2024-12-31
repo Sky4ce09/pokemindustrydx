@@ -1,0 +1,573 @@
+# messageAndLevelupAftermath.mlog
+
+spl new databaseCompanion DatabaseCompanion 8:types 6:healthScalar 6:speed 6:pAtk 6:pDef 6:eAtk 6:eDef 6:expRewardScalar
+spl new moveset Moveset 7 * 4
+
+expect cell1 cell2 cell3 cell4 cell5 cell6 bank1 display1 display2
+set messageInterface cell1
+set mainInterface cell2
+set battleInterface cell3
+set moveDatabase cell4
+set companionDatabase bank1
+set touchInterfaceDisplay cell5
+set touchInterfaceDpad cell6
+write -1 messageInterface 63
+draw color 255 255 255 255
+
+awa:
+read postLevelupSignal battleInterface 47
+# signal 1 is used for midturn renders
+fun have learnMoves equal postLevelupSignal 2
+fun have checkForEvolutions equal postLevelupSignal 3
+read messageSignal messageInterface 63
+jump awa equal messageSignal -1
+
+draw clear 0 0 0
+draw color 255 255 255 255
+
+parr messageSignal
+spl new message Message 5 7 7 7
+for i = 0 < 12 1
+read message messageInterface i
+jump doneProcessingSignal equal message -1
+spl of text Message 0
+spl of companionID Message 1
+fun have getCompanionInfo
+set name companionNameShort
+spl of level Message 2
+spl of moveID Message 3
+fun have getMoveInfo
+
+parr text
+print "Your team is full!\n"
+/ # 0
+print "Catch failed!\n"
+/ # 1
+print "{0} Lv{1}\nhas been caught!\n"
+format name
+format level
+/ # 2
+print "Escape failed!\n"
+/ # 3
+print "Your {0}\nused {1}!\n"
+format name
+format moveName
+/ # 4
+print "Opposing {0}\nused {1}!\n"
+format name
+format moveName
+/ # 5
+print "Your {0}\navoided the attack!\n"
+format name
+/ # 6
+print "Opposing {0}\navoided the attack!\n"
+format name
+/ # 7
+print "{0} is immune!\n"
+format name
+/ # 8
+print "It's not so effective...\n"
+/ # 9
+print "It's super effective!\n"
+/ # 10
+print "Opponent switched in\n{0} Lv{1}!\n"
+format name
+format level
+/ # 11 probably unused, too many lines
+print "Your {0}\nfainted!\n"
+format name
+/ # 12
+print "Opposing {0}\nfainted!\n"
+format name
+/ # 13
+print "Your {0}\ngot electrified!\n"
+format name
+/ # 14
+print "Opposing {0}\ngot electrified!\n"
+format name
+/ # 15
+print "Your {0}\nstarts melting!\n"
+format name
+/ # 16
+print "Opposing {0}\nstarts melting!\n"
+format name
+/ # 17
+print "Your {0}\nis short-circuiting!\n"
+format name
+/ # 18
+print "Opposing {0}\nis short-circuiting!\n"
+format name
+/ # 19
+print "Your {0}\nis melting...\n"
+format name
+/ # 20
+print "Opposing {0}\nis melting...\n"
+format name
+/ # 21
+print "Escape successful!\n"
+/ # 22
+print "Go, {0}!\n"
+format name
+// # 23
+next
+/
+/
+//
+doneProcessingSignal:
+parr messageSignal
+draw print 4 176 topLeft
+/
+/
+//
+draw color 180 155 90 255
+print "Click to proceed"
+draw print 88 4 bottom
+df display1
+write -1 messageInterface 63
+jump awa
+
+spl new levelTable LevelTable 7 * 6
+spl new moveset Moveset 7 * 4
+spl new learnsetSegment LearnsetSegment 14 * 3
+spl new learnsetMove LearnsetMove 7:id 7:level
+spl new indices Indices 7 * 6
+
+fun new learnMoves
+write 0 mainInterface 53
+read companionCount mainInterface 42
+read fightingCompanionIndex battleInterface 43
+read levelTable battleInterface 49
+jump noLevelUps equal levelTable 0
+for i = 0 < companionCount 1
+spl od levels LevelTable i
+jump nextCompanionLearnMoves equal levels 0
+op mul companionIDIndex i 7
+op add companionLevelIndex companionIDIndex 3
+read companionID mainInterface companionIDIndex
+read companionLevelNow mainInterface companionLevelIndex
+op mod companionLevelNow companionLevelNow 0b10000000
+op sub companionLevelThen companionLevelNow levels
+op mul index companionID 3
+op add index index 96
+write i battleInterface 51
+for j = 0 < 9 1
+op mod learnsetMoveIndex j 3
+op idiv indexShift j 3
+op add learnsetIndex index indexShift
+read learnsetSegment companionDatabase learnsetIndex
+spl od learnsetMove LearnsetSegment learnsetMoveIndex
+spl of learnID LearnsetMove id
+spl of learnLevel LearnsetMove level
+jump nextMove lessThanEq learnLevel companionLevelThen
+jump nextMove greaterThan learnLevel companionLevelNow
+
+op add companionMovesIndex companionIDIndex 6
+read moveset mainInterface companionMovesIndex
+for k = 0 < 4 1
+spl od moveID Moveset k
+jump nextMove equal moveID learnID
+next
+
+write 1 mainInterface 53
+write learnID battleInterface 52
+write 7 touchInterfaceDisplay 58
+write 13 touchInterfaceDpad 58
+fun have sendAndReceive
+jump nextMove equal action 4
+
+op add companionMovesIndex companionIDIndex 6
+read moveset mainInterface companionMovesIndex
+spl wd learnID Moveset action
+write moveset mainInterface companionMovesIndex
+jump nextMove notEqual i fightingCompanionIndex
+op add battleMoveIndex action 23
+write learnID battleInterface battleMoveIndex
+
+nextMove:
+next
+nextCompanionLearnMoves:
+next
+
+fun have awaitTouchscreenLibReadyStatus
+
+noLevelUps:
+write 0 battleInterface 47
+fun close
+
+fun new checkForEvolutions
+read companionCount mainInterface 42
+spl new evolution Evolution 7:level 7:id
+read levelTable battleInterface 49
+jump noEvolutionPossible equal levelTable 0
+for i = 0 < companionCount 1
+spl od levels LevelTable i
+jump evolveNextCompanion equal levels 0
+op mul companionIDIndex i 7
+op add companionLevelIndex companionIDIndex 3
+read companionID mainInterface companionIDIndex
+read companionLevel mainInterface companionLevelIndex
+op mod companionLevel companionLevel 0b10000000
+op add evolutionIndex companionID 384
+read evolution companionDatabase evolutionIndex
+spl of evolveLevel Evolution level
+jump evolveNextCompanion equal evolveLevel 0
+jump evolveNextCompanion greaterThan evolveLevel companionLevel
+spl of evolveID Evolution id
+write companionID battleInterface 51
+write evolveID battleInterface 52
+
+read requireCleanup mainInterface 53
+jump noErase equal requireCleanup false
+draw clear 0 0 0
+df display1
+noErase:
+write 0 touchInterfaceDisplay 58
+write 14 touchInterfaceDpad 58
+fun have sendAndReceive
+jump evolveNextCompanion equal action 1
+
+set companionID evolveID
+fun have getHealthAndTypes
+op add companionTypesIndex companionIDIndex 1
+op add companionHealthIndex companionIDIndex 2
+write companionID mainInterface companionIDIndex
+write types mainInterface companionTypesIndex
+write maxHealth mainInterface companionHealthIndex
+read fightingCompanionIndex battleInterface 43
+jump evolveNextCompanion notEqual i fightingCompanionIndex
+op shl types types 7
+op add companionIDAndTypes companionID types
+write companionIDAndTypes battleInterface 20
+write maxHealth battleInterface 22
+evolveNextCompanion:
+next
+noEvolutionPossible:
+write 0 battleInterface 47
+fun close
+
+fun new awaitTouchscreenLibReadyStatus
+waitForTouchscreenLibToGetReady:
+read ready touchInterfaceDisplay 58
+jump waitForTouchscreenLibToGetReady notEqual ready -1
+read ready touchInterfaceDpad 58
+jump waitForTouchscreenLibToGetReady notEqual ready -1
+fun close
+
+fun new sendAndReceive
+fun have awaitTouchscreenLibReadyStatus
+write -1 touchInterfaceDpad 59
+detectPlayerInput:
+read action touchInterfaceDpad 59
+jump detectPlayerInput equal action -1
+fun close
+
+fun new getHealthAndTypes # companionID, companionLevel
+read databaseCompanion companionDatabase companionID
+spl of types DatabaseCompanion types
+spl of healthScalar DatabaseCompanion healthScalar
+op mul maxHealth companionLevel healthScalar
+op idiv maxHealth maxHealth 6.5
+op add maxHealth maxHealth 5
+op shl maxHealth' maxHealth 10
+op add maxHealth maxHealth maxHealth'
+fun close
+
+fun new getCompanionInfo
+op mul companionID' companionID 2
+op add @counter @counter companionID'
+set companionNameShort "Dagger"
+jump gotData
+set companionNameShort "Mace"
+jump gotData
+set companionNameShort "Fortress"
+jump gotData
+set companionNameShort "Nova"
+jump gotData
+set companionNameShort "Pulsar"
+jump gotData
+set companionNameShort "Quasar"
+jump gotData
+set companionNameShort "Crawler"
+jump gotData
+set companionNameShort "Atrax"
+jump gotData
+set companionNameShort "Spiroct"
+jump gotData
+set companionNameShort "Stell"
+jump gotData
+set companionNameShort "Locus"
+jump gotData
+set companionNameShort "Precept"
+jump gotData
+set companionNameShort "Merui"
+jump gotData
+set companionNameShort "Cleroi"
+jump gotData
+set companionNameShort "Anthicus"
+jump gotData
+set companionNameShort "Flare"
+jump gotData
+set companionNameShort "Horizon"
+jump gotData
+set companionNameShort "Zenith"
+jump gotData
+set companionNameShort "Mono"
+jump gotData
+set companionNameShort "Poly"
+jump gotData
+set companionNameShort "Mega"
+jump gotData
+set companionNameShort "Elude"
+jump gotData
+set companionNameShort "Avert"
+jump gotData
+set companionNameShort "Obviate"
+jump gotData
+set companionNameShort "Risso"
+jump gotData
+set companionNameShort "Minke"
+jump gotData
+set companionNameShort "Bryde"
+jump gotData
+set companionNameShort "Retusa"
+jump gotData
+set companionNameShort "Oxynoe"
+jump gotData
+set companionNameShort "Cyerce"
+jump gotData
+set companionNameShort "Co. Wall S"
+jump gotData
+set companionNameShort "Co. Wall L"
+jump gotData
+set companionNameShort "Ti. Wall S"
+jump gotData
+set companionNameShort "Ti. Wall L"
+jump gotData
+set companionNameShort "Pl. Wall S"
+jump gotData
+set companionNameShort "Pl. Wall L"
+jump gotData
+set companionNameShort "Th. Wall S"
+jump gotData
+set companionNameShort "Th. Wall L"
+jump gotData
+set companionNameShort "Ph. Wall S"
+jump gotData
+set companionNameShort "Ph. Wall L"
+jump gotData
+set companionNameShort "Su. Wall S"
+jump gotData
+set companionNameShort "Su. Wall L"
+jump gotData
+set companionNameShort "Door S"
+jump gotData
+set companionNameShort "Door L"
+jump gotData
+set companionNameShort "Conveyor"
+jump gotData
+set companionNameShort "Ti. Conveyor"
+jump gotData
+set companionNameShort "Ar. Conveyor"
+jump gotData
+set companionNameShort "Conduit"
+jump gotData
+set companionNameShort "Pu. Conduit"
+jump gotData
+set companionNameShort "Pl. Conduit"
+jump gotData
+set companionNameShort "Router"
+jump gotData
+set companionNameShort "Distributor"
+jump gotData
+set companionNameShort "Container"
+jump gotData
+set companionNameShort "Vault"
+jump gotData
+set companionNameShort "Liq. Contai."
+jump gotData
+set companionNameShort "Liq. Tank"
+jump gotData
+set companionNameShort "Micro Proc."
+jump gotData
+set companionNameShort "Logic Proc."
+jump gotData
+set companionNameShort "Hyper Proc."
+jump gotData
+set companionNameShort "Shard"
+jump gotData
+set companionNameShort "Foundation"
+jump gotData
+set companionNameShort "Nucleus"
+jump gotData
+set companionNameShort "Bastion"
+jump gotData
+set companionNameShort "Citadel"
+jump gotData
+set companionNameShort "Acropolis"
+jump gotData
+set companionNameShort "Alpha"
+jump gotData
+set companionNameShort "Beta"
+jump gotData
+set companionNameShort "Gamma"
+jump gotData
+set companionNameShort "Evoke"
+jump gotData
+set companionNameShort "Incite"
+jump gotData
+set companionNameShort "Emanate"
+jump gotData
+set companionNameShort "Elec. Heater"
+jump gotData
+set companionNameShort "Slag Heater"
+jump gotData
+set companionNameShort "Phase Heater"
+jump gotData
+set companionNameShort "Force Proj."
+jump gotData
+set companionNameShort "Duo"
+jump gotData
+set companionNameShort "Salvo"
+jump gotData
+set companionNameShort "Spectre"
+jump gotData
+set companionNameShort "Arc"
+jump gotData
+set companionNameShort "Lancer"
+jump gotData
+set companionNameShort "Meltdown"
+jump gotData
+set companionNameShort "Wave"
+jump gotData
+set companionNameShort "Tsunami"
+jump gotData
+set companionNameShort "Parallax"
+jump gotData
+set companionNameShort "Reign"
+jump gotData
+set companionNameShort "Corvus"
+jump gotData
+set companionNameShort "Toxopid"
+jump gotData
+set companionNameShort "Eclipse"
+jump gotData
+set companionNameShort "Oct"
+jump gotData
+set companionNameShort "World Proc."
+gotData:
+fun close
+
+fun new getMoveInfo
+op mul moveID' moveID 2
+op add @counter @counter moveID'
+set moveName "ae"
+jump gotMove
+set moveName "Manipulate"
+jump gotMove
+set moveName "Disable"
+jump gotMove
+set moveName "RCE"
+jump gotMove
+set moveName "Remote Shutdown"
+jump gotMove
+set moveName "Kinesis"
+jump gotMove
+set moveName "Single Shot"
+jump gotMove
+set moveName "Double Shot"
+jump gotMove
+set moveName "Full Round"
+jump gotMove
+set moveName "Ground Missile"
+jump gotMove
+set moveName "Turret Guns"
+jump gotMove
+set moveName "Disrupting Round"
+jump gotMove
+set moveName "Intercept"
+jump gotMove
+set moveName "Blitz"
+jump gotMove
+set moveName "Collide"
+jump gotMove
+set moveName "Bludgeon"
+jump gotMove
+set moveName "Normal Beam"
+jump gotMove
+set moveName "Paralyzing Beam"
+jump gotMove
+set moveName "Pick and Drop"
+jump gotMove
+set moveName "Ionized Fire"
+jump gotMove
+set moveName "Throw Slag"
+jump gotMove
+set moveName "Melt"
+jump gotMove
+set moveName "Oil Bomb"
+jump gotMove
+set moveName "Water Gun"
+jump gotMove
+set moveName "Charged Scald"
+jump gotMove
+set moveName "Pressure Wash"
+jump gotMove
+set moveName "Mortar Fire"
+jump gotMove
+set moveName "Long Dist. Shells"
+jump gotMove
+set moveName "Zap"
+jump gotMove
+set moveName "Stun Gun"
+jump gotMove
+set moveName "Energy Blades"
+jump gotMove
+set moveName "EMP Shell"
+jump gotMove
+set moveName "Convey"
+jump gotMove
+set moveName "Spill"
+jump gotMove
+set moveName "Distribute"
+jump gotMove
+set moveName "Blast Bomb"
+jump gotMove
+set moveName "Landmine"
+jump gotMove
+set moveName "Bulldoze"
+jump gotMove
+set moveName "Shield Slam"
+jump gotMove
+set moveName "All Weapons"
+jump gotMove
+set moveName "Corrupt Systems"
+jump gotMove
+set moveName "Magnetic Waves"
+jump gotMove
+set moveName "Reactive Shell"
+jump gotMove
+set moveName "Overheat"
+jump gotMove
+set moveName "Flood"
+jump gotMove
+set moveName "Energy Geyser"
+jump gotMove
+set moveName "Replicate Swarm"
+jump gotMove
+set moveName "Replicate Pulse"
+jump gotMove
+set moveName "Duplex Storm"
+jump gotMove
+set moveName "Imported Blast"
+jump gotMove
+set moveName "Scatter Bombs"
+jump gotMove
+set moveName "Hyper Pulse"
+jump gotMove
+set moveName "Napalm Shell"
+jump gotMove
+set moveName "Earthquake"
+jump gotMove
+set moveName "Laser Cannon"
+gotMove:
+fun close

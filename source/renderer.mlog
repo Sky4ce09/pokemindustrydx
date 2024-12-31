@@ -1,0 +1,440 @@
+# renderer.mlog
+
+spl new tileMemory TileMemory 8 * 6
+spl new object Object 4:floorAlpha 1:floorType 3:objType 43:air 1:trainerBit
+spl new object Trainer 5:floorData 42:companions 3:companionCount 1:remainsAfterBeingBeaten 1:trainerBit
+spl new tileData ObjectTile 7:pointer 1:isObject
+spl new tileData TerrainTile 4:alpha 3:meta
+spl new colors Colors 8 8 8 8 8 8
+
+expect cell1 cell2 display1
+
+set renderIndex 0
+set renderInterface cell1
+set mainInterface cell2
+set projectionOffset -2
+set alphaCompensate 16
+op add signalOutIndex renderIndex 1
+op mul drawY renderIndex 12
+op add drawY drawY projectionOffset
+op sub verticalTileOffset renderIndex 7
+
+awaitSignal:
+read interfaceMapIndex mainInterface 45
+fun have getData notEqual interfaceMapIndex mapIndex # failsafe
+read signalIn renderInterface 0
+jump awaitSignal lessThan signalIn 1
+# signal 1: just draw
+# signal 2: update bank and draw
+
+draw color 0 0 0 255
+draw rect 0 drawY 176 12
+read playerX mainInterface 43
+read playerY mainInterface 44
+fun have getData equal signalIn 2
+op add tileY playerY verticalTileOffset
+jump finishDrawingRow lessThan tileY lowerBoundY
+jump finishDrawingRow greaterThan tileY upperBoundY
+op sub tileXmin playerX 7
+op max tileX tileXmin lowerBoundX
+op add tileXmax playerX 7
+op min tileXmax tileXmax upperBoundX
+op mul tile tileY 48
+op add tileMax tile tileXmax
+op add tile tile tileX
+op sub diff tileX tileXmin
+op mul shiftDrawX diff 12
+op add drawX projectionOffset shiftDrawX
+
+drawLoop:
+op mod tileMemoryIndex tile 6
+op idiv tileMemoryAddress tile 6
+read tileMemory mapInterface tileMemoryAddress
+spl od tileData TileMemory tileMemoryIndex
+spl of isObject ObjectTile isObject
+jump drawTerrain equal isObject 0
+
+# draw object
+spl of pointer ObjectTile pointer
+op add objectAddress pointer 384
+read object mapInterface objectAddress
+spl of alpha Object floorAlpha
+spl of floorType Object floorType
+op mul alpha alpha alphaCompensate
+jump altFloor equal floorType 1
+draw color floorAr floorAg floorAb alpha
+draw rect drawX drawY 12 12
+jump finishDrawingFloorBeneathObject
+altFloor:
+draw color floorBr floorBg floorBb alpha
+draw rect drawX drawY 12 12
+
+finishDrawingFloorBeneathObject:
+spl of trainerBit Object trainerBit
+jump drawTrainer equal trainerBit 1
+spl of objType Object objType
+parr objType
+# unused case, objType is obiwan but i don't wanna lose speed correcting it
+/
+draw color 0xa0 0x63 0x0e 255
+op add elementX drawX 2
+op add elementY drawY 2
+draw rect elementX elementY 8 8
+draw color 0x00 0x00 0x00 255
+op add elementX drawX 1
+op add elementY drawY 1
+draw rect elementX elementY 7 7
+op add elementY drawY 8
+op add elementX2 drawX 3
+op add elementY2 drawY 10
+draw stroke 1
+draw line elementX elementY elementX2 elementY2
+op add elementX drawX 8
+op add elementX2 drawX 10
+draw line elementX elementY elementX2 elementY2
+op add elementY drawY 1
+op add elementY2 drawY 3
+draw line elementX elementY elementX2 elementY2
+op add elementX drawX 10
+op add elementY drawY 3
+op add elementY2 drawY 10
+draw line elementX elementY elementX2 elementY2
+op add elementY drawY 10
+op add elementX2 drawX 3
+draw line elementX elementY elementX2 elementY2
+draw color 0xe4 0x95 0x25 255
+op add elementX drawX 2
+op add elementY drawY 2
+draw rect elementX elementY 5 5
+/
+draw color 0x00 0x00 0x00 255
+op add elementX drawX 2
+op add elementY drawY 1
+draw rect elementX elementY 8 10
+op add elementX drawX 1
+op add elementY drawY 2
+draw rect elementX elementY 10 8
+draw color 0xff 0xff 0xff 255
+op add elementX drawX 2
+draw rect elementX elementY 8 8
+draw color 0x2e 0x99 0x62 255
+op add elementX drawX 5
+op add elementY drawY 3
+draw rect elementX elementY 2 6
+op add elementX drawX 3
+op add elementY drawY 5
+draw rect elementX elementY 6 2
+/
+draw color 0x00 0x00 0x00 255
+op add elementX drawX 1
+op add elementY drawY 0
+draw rect elementX elementY 10 12
+draw color 0x48 0x3d 0x33 255
+op add elementX drawX 2
+op add elementY drawY 1
+draw rect elementX elementY 8 10
+draw color 0x00 0x00 0x00 255
+op add elementX drawX 6
+op add elementY drawY 6
+draw rect elementX elementY 1 1
+op add elementX drawX 7
+op add elementY drawY 5
+draw rect elementX elementY 2 1
+draw color 0x8f 0x8f 0x8f 255
+op add elementX drawX 2
+op add elementY drawY 1
+draw rect elementX elementY 1 10
+/
+# do not draw any graphics for trap doors
+/
+op add drawX' drawX 6
+op add drawY' drawY 6
+draw color 255 255 255 255
+spl new object MapCompanion 8:fluff 7:companionid
+spl of companionid MapCompanion companionid
+op mul shift companionid 2
+op add @counter @counter shift
+draw image drawX' drawY' @dagger 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @mace 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @fortress 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @nova 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @pulsar 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @quasar 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @crawler 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @atrax 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @spiroct 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @stell 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @locus 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @precept 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @merui 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @cleroi 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @anthicus 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @flare 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @horizon 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @zenith 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @mono 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @poly 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @mega 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @elude 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @avert 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @obviate 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @risso 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @minke 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @bryde 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @retusa 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @oxynoe 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @cyerce 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @copper-wall 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @copper-wall-large 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @titanium-wall 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @titanium-wall-large 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @plastanium-wall 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @plastanium-wall-large 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @thorium-wall 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @thorium-wall-large 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @phase-wall 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @phase-wall-large 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @surge-wall 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @surge-wall-large 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @door 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @door-large 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @conveyor 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @titanium-conveyor 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @armored-conveyor 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @conduit 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @pulse-conduit 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @plated-conduit 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @router 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @distributor 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @container 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @vault 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @liquid-container 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @liquid-tank 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @micro-processor 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @logic-processor 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @hyper-processor 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @core-shard 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @core-foundation 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @core-nucleus 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @core-bastion 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @core-citadel 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @core-acropolis 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @alpha 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @beta 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @gamma 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @evoke 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @incite 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @emanate 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @electric-heater 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @slag-heater 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @phase-heater 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @force-projector 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @duo 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @salvo 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @spectre 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @arc 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @lancer 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @meltdown 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @wave 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @tsunami 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @parallax 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @reign 12 0
+jump finishDrawingTile
+draw image drawX'  drawY' @corvus 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @toxopid 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @eclipse 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @oct 12 0
+jump finishDrawingTile
+draw image drawX' drawY' @world-processor 12 0
+jump finishDrawingTile
+/
+# detectors are obiwan too
+/
+# do not draw any graphics for detectors
+//
+jump finishDrawingTile
+
+drawTrainer:
+op add drawX' drawX 6
+op add drawY' drawY 6
+draw stroke 2
+draw color 100 100 20 255
+draw poly drawX' drawY' 6 5 0
+spl of companionCount Trainer companionCount
+jump defeatedColor equal companionCount 0
+draw color 230 130 10 255
+jump gotTrainerColor
+defeatedColor:
+draw color 100 100 100 255
+gotTrainerColor:
+draw linePoly drawX' drawY' 6 5 0
+jump finishDrawingTile
+
+drawTerrain:
+spl of alpha TerrainTile alpha
+spl of meta TerrainTile meta
+op mul alpha alpha alphaCompensate
+parr meta
+draw color floorAr floorAg floorAb alpha
+draw rect drawX drawY 12 12
+/
+draw color floorBr floorBg floorBb alpha
+draw rect drawX drawY 12 12
+/
+draw color wallAr wallAg wallAb alpha
+draw rect drawX drawY 12 12
+/
+draw color wallBr wallBg wallBb alpha
+draw rect drawX drawY 12 12
+/
+draw color floorAr floorAg floorAb alpha
+draw rect drawX drawY 12 12
+draw color 173 226 75 125
+op add drawX' drawX 2
+op add drawY' drawY 1
+draw rect drawX' drawY' 8 8
+/
+draw color floorBr floorBg floorBb alpha
+draw rect drawX drawY 12 12
+draw color 173 226 75 125
+op add drawX' drawX 2
+op add drawY' drawY 1
+draw rect drawX' drawY' 8 8
+/
+draw color floorAr floorAg floorAb alpha
+draw rect drawX drawY 12 12
+draw color 31 224 176 125
+op add drawX' drawX 2
+op add drawY' drawY 1
+draw rect drawX' drawY' 8 8
+/
+draw color floorBr floorBg floorBb alpha
+draw rect drawX drawY 12 12
+draw color 31 224 176 125
+op add drawX' drawX 2
+op add drawY' drawY 1
+draw rect drawX' drawY' 8 8
+//
+
+finishDrawingTile:
+op add tile tile 1
+op add drawX drawX 12
+jump drawLoop lessThanEq tile tileMax
+
+finishDrawingRow:
+write 1 renderInterface signalOutIndex
+awaitCompletion:
+read update renderInterface 0
+jump awaitCompletion notEqual update 0
+df display1
+jump awaitSignal
+
+fun new getData
+read mapIndex mainInterface 45
+read lowerBoundX mainInterface 47
+read lowerBoundY mainInterface 48
+read upperBoundX mainInterface 49
+read upperBoundY mainInterface 50
+getlink mapInterface mapIndex
+read colors mapInterface 503
+spl of floorAr Colors 2
+spl of floorAg Colors 1
+spl of floorAb Colors 0
+spl of floorBr Colors 5
+spl of floorBg Colors 4
+spl of floorBb Colors 3
+read colors mapInterface 504
+spl of wallAr Colors 2
+spl of wallAg Colors 1
+spl of wallAb Colors 0
+spl of wallBr Colors 5
+spl of wallBg Colors 4
+spl of wallBb Colors 3
+fun close

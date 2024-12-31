@@ -1,0 +1,899 @@
+Dagger:
+	Types: Normal / Offense
+	Health: 20
+	Speed: 30
+	Physical Attack: 30
+	Physical Defense: 25
+	Electric Attack: 10
+	Electric Defense: 23
+	Exp Reward: 20
+
+Mace:
+	Types: Normal / Offense
+	Health: 30
+	Speed: 25
+	Physical Attack: 37
+	Physical Defense: 35
+	Electric Attack: 16
+	Electric Defense: 27
+	Exp Reward: 30
+
+Fortress:
+	Types: Artillery / Offense
+	Health: 40
+	Speed: 20
+	Physical Attack: 45
+	Physical Defense: 45
+	Electric Attack: 20
+	Electric Defense: 30
+	Exp Reward: 40
+
+Nova:
+	Types: Normal / Energy
+	Health: 20
+	Speed: 30
+	Physical Attack: 12
+	Physical Defense: 21
+	Electric Attack: 26
+	Electric Defense: 26
+	Exp Reward: 20
+
+Pulsar:
+	Types: Normal / Energy
+	Health: 30
+	Speed: 30
+	Physical Attack: 18
+	Physical Defense: 32
+	Electric Attack: 32
+	Electric Defense: 30
+	Exp Reward: 30
+
+Quasar:
+	Types: Offense / Energy
+	Health: 35
+	Speed: 30
+	Physical Attack: 20
+	Physical Defense: 25
+	Electric Attack: 48
+	Electric Defense: 42
+	Exp Reward: 40
+
+Crawler:
+	Types: Normal / Fire
+	Health: 5
+	Speed: 45
+	Physical Attack: 40
+	Physical Defense: 10
+	Electric Attack: 20
+	Electric Defense: 10
+	Exp Reward: 20
+
+Atrax:
+	Types: Offense / Fire
+	Health: 21
+	Speed: 35
+	Physical Attack: 35
+	Physical Defense: 22
+	Electric Attack: 35
+	Electric Defense: 22
+	Exp Reward: 30
+
+Spiroct:
+	Types: Offense / x
+	Health: 30
+	Speed: 35
+	Physical Attack: 40
+	Physical Defense: 25
+	Electric Attack: 40
+	Electric Defense: 25
+	Exp Reward: 40
+
+Stell:
+	Types: Normal / Defense
+	Health: 30
+	Speed: 20
+	Physical Attack: 30
+	Physical Defense: 25
+	Electric Attack: 15
+	Electric Defense: 15
+	Exp Reward: 20
+
+Locus: 
+	Types: Defense / Normal
+	Health: 35
+	Speed: 25
+	Physical Attack: 38
+	Physical Defense: 32
+	Electric Attack: 18
+	Electric Defense: 22
+	Exp Reward: 30
+
+Precept:
+	Types: Defense / Ground
+	Health: 40
+	Speed: 30
+	Physical Attack: 45
+	Physical Defense: 37
+	Electric Attack: 21
+	Electric Defense: 27
+	Exp Reward: 40
+
+Merui:
+	Types: Artillery / x
+	Health: 25
+	Speed: 30
+	Physical Attack: 27
+	Physical Defense: 14
+	Electric Attack: 14
+	Electric Defense: 27
+	Exp Reward: 20
+
+Cleroi:
+	Types: Artillery / Offense
+	Health: 30
+	Speed: 35
+	Physical Attack: 35
+	Physical Defense: 20
+	Electric Attack: 18
+	Electric Defense: 34
+	Exp Reward: 30
+
+Anthicus:
+	Types: Artillery / Offense
+	Health: 35
+	Speed: 40
+	Physical Attack: 39
+	Physical Defense: 30
+	Electric Attack: 26
+	Electric Defense: 39
+	Exp Reward: 40
+
+Flare:
+	Types: Air / x
+	Health: 14
+	Speed: 50
+	Physical Attack: 21
+	Physical Defense: 14
+	Electric Attack: 17
+	Electric Defense: 14
+	Exp Reward: 20
+
+Horizon:
+	Types: Air / Offense
+	Health: 25
+	Speed: 30
+	Physical Attack: 35
+	Physical Defense: 34
+	Electric Attack: 17
+	Electric Defense: 28
+	Exp Reward: 30
+
+Zenith:
+	Types: Air / Offense
+	Health: 35
+	Speed: 30
+	Physical Attack: 43
+	Physical Defense: 38
+	Electric Attack: 22
+	Electric Defense: 32
+	Exp Reward: 40
+
+Mono:
+	Types: Industry / Air
+	Health: 12
+	Speed: 13
+	Physical Attack: 10
+	Physical Defense: 20
+	Electric Attack: 20
+	Electric Defense: 25
+	Exp Reward: 20
+
+Poly:
+	Types: Support / Air
+	Health: 20
+	Speed: 20
+	Physical Attack: 20
+	Physical Defense: 30
+	Electric Attack: 30
+	Electric Defense: 40
+	Exp Reward: 30
+
+Mega:
+	Types: Support / Air
+	Health: 30
+	Speed: 25
+	Physical Attack: 35
+	Physical Defense: 30
+	Electric Attack: 38
+	Electric Defense: 52
+	Exp Reward: 40
+
+Elude:
+	Types: Normal / Air
+	Health: 25
+	Speed: 20
+	Physical Attack: 20
+	Physical Defense: 15
+	Electric Attack: 35
+	Electric Defense: 20
+	Exp Reward: 20
+
+Avert:
+	Types: Air / x
+	Health: 30
+	Speed: 23
+	Physical Attack: 25
+	Physical Defense: 22
+	Electric Attack: 40
+	Electric Defense: 25
+	Exp Reward: 30
+
+Obviate:
+	Types: Energy / Air
+	Health: 40
+	Speed: 25
+	Physical Attack: 30
+	Physical Defense: 28
+	Electric Attack: 45
+	Electric Defense: 28
+	Exp Reward: 40
+
+Risso:
+	Types: Offense / Water
+	Health: 25
+	Speed: 28
+	Physical Attack: 27
+	Physical Defense: 20
+	Electric Attack: 10
+	Electric Defense: 20
+	Exp Reward: 20
+
+Minke:
+	Types: Offense / Water
+	Health: 33
+	Speed: 25
+	Physical Attack: 33
+	Physical Defense: 28
+	Electric Attack: 15
+	Electric Defense: 28
+	Exp Reward: 30
+
+Bryde:
+	Types: Offense / Water
+	Health: 41
+	Speed: 22
+	Physical Attack: 45
+	Physical Defense: 36
+	Electric Attack: 25
+	Electric Defense: 36
+	Exp Reward: 40
+
+Retusa:
+	Types: Support / Water
+	Health: 25
+	Speed: 25
+	Physical Attack: 13
+	Physical Defense: 22
+	Electric Attack: 27
+	Electric Defense: 22
+	Exp Reward: 20
+
+Oxynoe:
+	Types: Support / Water
+	Health: 32
+	Speed: 25
+	Physical Attack: 21
+	Physical Defense: 27
+	Electric Attack: 38
+	Electric Defense: 27
+	Exp Reward: 30
+
+Cyerce:
+	Types: Support / Water
+	Health: 40
+	Speed: 20
+	Physical Attack: 30
+	Physical Defense: 35
+	Electric Attack: 45
+	Electric Defense: 35
+	Exp Reward: 40
+
+Copper Wall S:
+	Types: Defense / Normal
+	Health: 30
+	Speed: 25
+	Physical Attack: 20
+	Physical Defense: 25
+	Electric Attack: 20
+	Electric Defense: 25
+	Exp Reward: 25
+
+Copper Wall L:
+	Types: Defense / Normal
+	Health: 35
+	Speed: 30
+	Physical Attack: 26
+	Physical Defense: 31
+	Electric Attack: 26
+	Electric Defense: 31
+	Exp Reward: 35
+
+Titanium Wall S:
+	Types: Defense / x
+	Health: 35
+	Speed: 20
+	Physical Attack: 20
+	Physical Defense: 25
+	Electric Attack: 20
+	Electric Defense: 25
+	Exp Reward: 25
+
+Titanium Wall L:
+	Types: Defense / x
+	Health: 40
+	Speed: 25
+	Physical Attack: 26
+	Physical Defense: 31
+	Electric Attack: 26
+	Electric Defense: 31
+	Exp Reward: 35
+
+Plastanium Wall S:
+	Types: Defense / Support
+	Health: 30
+	Speed: 15
+	Physical Attack: 15
+	Physical Defense: 20
+	Electric Attack: 25
+	Electric Defense: 35
+	Exp Reward: 25
+
+Plastanium Wall L:
+	Types: Defense / Support
+	Health: 40
+	Speed: 25
+	Physical Attack: 15
+	Physical Defense: 25
+	Electric Attack: 30
+	Electric Defense: 45
+	Exp Reward: 35
+
+Thorium Wall S:
+	Types: Defense / x
+	Health: 35
+	Speed: 14
+	Physical Attack: 11
+	Physical Defense: 36
+	Electric Attack: 11
+	Electric Defense: 36
+	Exp Reward: 25
+
+Thorium Wall L:
+	Types: Defense / x
+	Health: 45
+	Speed: 20
+	Physical Attack: 14
+	Physical Defense: 42
+	Electric Attack: 14
+	Electric Defense: 42
+	Exp Reward: 35
+
+Phase Wall S:
+	Types: Defense / Offense
+	Health: 35
+	Speed: 15
+	Physical Attack: 30
+	Physical Defense: 35
+	Electric Attack: 10
+	Electric Defense: 15
+	Exp Reward: 25
+
+Phase Wall L:
+	Types: Defense / Offense
+	Health: 45
+	Speed: 25
+	Physical Attack: 35
+	Physical Defense: 45
+	Electric Attack: 10
+	Electric Defense: 20
+	Exp Reward: 35
+
+Surge Wall S:
+	Types: Defense / Energy
+	Health: 35
+	Speed: 28
+	Physical Attack: 10
+	Physical Defense: 25
+	Electric Attack: 25
+	Electric Defense: 25
+	Exp Reward: 25
+
+Surge Wall L:
+	Types: Defense / Energy
+	Health: 45
+	Speed: 33
+	Physical Attack: 10
+	Physical Defense: 32
+	Electric Attack: 28
+	Electric Defense: 32
+	Exp Reward: 35
+
+Door S:
+	Types: Defense / Industry
+	Health: 30
+	Speed: 20
+	Physical Attack: 20
+	Physical Defense: 25
+	Electric Attack: 20
+	Electric Defense: 25
+	Exp Reward: 25
+
+Door L:
+	Types: Defense / Industry
+	Health: 40
+	Speed: 28
+	Physical Attack: 24
+	Physical Defense: 32
+	Electric Attack: 24
+	Electric Defense: 32
+	Exp Reward: 35
+
+Conveyor:
+	Types: Industry / x
+	Health: 16
+	Speed: 30
+	Physical Attack: 21
+	Physical Defense: 21
+	Electric Attack: 21
+	Electric Defense: 21
+	Exp Reward: 20
+
+Titanium Conveyor:
+	Types: Industry / x
+	Health: 21
+	Speed: 35
+	Physical Attack: 26
+	Physical Defense: 26
+	Electric Attack: 26
+	Electric Defense: 26
+	Exp Reward: 30
+
+Armored Conveyor:
+	Types: Industry / Defense
+	Health: 31
+	Speed: 35
+	Physical Attack: 31
+	Physical Defense: 31
+	Electric Attack: 31
+	Electric Defense: 31
+	Exp Reward: 40
+
+Conduit:
+	Types: Industry / Water
+	Health: 15
+	Speed: 35
+	Physical Attack: 20
+	Physical Defense: 20
+	Electric Attack: 20
+	Electric Defense: 20
+	Exp Reward: 20
+
+Pulse Conduit:
+	Types: Industry / Water
+	Health: 20
+	Speed: 40
+	Physical Attack: 25
+	Physical Defense: 25
+	Electric Attack: 25
+	Electric Defense: 25
+	Exp Reward: 30
+
+Plated Conduit:
+	Types: Industry / Defense
+	Health: 30
+	Speed: 40
+	Physical Attack: 30
+	Physical Defense: 30
+	Electric Attack: 30
+	Electric Defense: 30
+	Exp Reward: 40
+
+Router:
+	Types: Industry / Ground
+	Health: 30
+	Speed: 20
+	Physical Attack: 25
+	Physical Defense: 25
+	Electric Attack: 25
+	Electric Defense: 25
+	Exp Reward: 25
+
+Distributor:
+	Types: Industry / Ground
+	Health: 35
+	Speed: 28
+	Physical Attack: 30
+	Physical Defense: 30
+	Electric Attack: 30
+	Electric Defense: 30
+	Exp Reward: 35
+
+Container:
+	Types: Industry / Support
+	Health: 30
+	Speed: 31
+	Physical Attack: 29
+	Physical Defense: 18
+	Electric Attack: 29
+	Electric Defense: 18
+	Exp Reward: 25
+
+Vault:
+	Types: Industry / Support
+	Health: 35
+	Speed: 36
+	Physical Attack: 36
+	Physical Defense: 21
+	Electric Attack: 36
+	Electric Defense: 21
+	Exp Reward: 35
+
+Liquid Container:
+	Types: Industry / Water
+	Health: 35
+	Speed: 34
+	Physical Attack: 16
+	Physical Defense: 27
+	Electric Attack: 16
+	Electric Defense: 27
+	Exp Reward: 25
+
+Liquid Tank:
+	Types: Industry / Water
+	Health: 40
+	Speed: 39
+	Physical Attack: 19
+	Physical Defense: 34
+	Electric Attack: 19
+	Electric Defense: 34
+	Exp Reward: 35
+
+Micro Processor:
+	Types: Logic / x
+	Health: 22
+	Speed: 27
+	Physical Attack: 28
+	Physical Defense: 15
+	Electric Attack: 28
+	Electric Defense: 15
+	Exp Reward: 20
+
+Logic Processor:
+	Types: Logic / x
+	Health: 26
+	Speed: 34
+	Physical Attack: 37
+	Physical Defense: 18
+	Electric Attack: 37
+	Electric Defense: 18
+	Exp Reward: 30
+
+Hyper Processor:
+	Types: Logic / x
+	Health: 30
+	Speed: 40
+	Physical Attack: 45
+	Physical Defense: 20
+	Electric Attack: 45
+	Electric Defense: 20
+	Exp Reward: 40
+
+Shard:
+	Types: Core / x
+	Health: 15
+	Speed: 29
+	Physical Attack: 25
+	Physical Defense: 30
+	Electric Attack: 10
+	Electric Defense: 30
+	Exp Reward: 20
+
+Foundation:
+	Types: Core / x
+	Health: 25
+	Speed: 29
+	Physical Attack: 30
+	Physical Defense: 37
+	Electric Attack: 12
+	Electric Defense: 37
+	Exp Reward: 30
+
+Nucleus:
+	Types: Core / x
+	Health: 35
+	Speed: 29
+	Physical Attack: 35
+	Physical Defense: 43
+	Electric Attack: 15
+	Electric Defense: 43
+	Exp Reward: 40
+
+Bastion:
+	Types: Core / Defense
+	Health: 15
+	Speed: 25
+	Physical Attack: 10
+	Physical Defense: 30
+	Electric Attack: 25
+	Electric Defense: 30
+	Exp Reward: 20
+
+Citadel:
+	Types: Core / Defense
+	Health: 25
+	Speed: 25
+	Physical Attack: 10
+	Physical Defense: 40
+	Electric Attack: 30
+	Electric Defense: 40
+	Exp Reward: 30
+
+Acropolis:
+	Types: Core / Defense
+	Health: 35
+	Speed: 25
+	Physical Attack: 15
+	Physical Defense: 45
+	Electric Attack: 35
+	Electric Defense: 45
+	Exp Reward: 40
+
+Alpha:
+	Types: Core / Air
+	Health: 25
+	Speed: 25
+	Physical Attack: 30
+	Physical Defense: 25
+	Electric Attack: 10
+	Electric Defense: 30
+	Exp Reward: 20
+
+Beta:
+	Types: Core / Air
+	Health: 30
+	Speed: 30
+	Physical Attack: 35
+	Physical Defense: 30
+	Electric Attack: 10
+	Electric Defense: 35
+	Exp Reward: 30
+
+Gamma:
+	Types: Core / Air
+	Health: 35
+	Speed: 35
+	Physical Attack: 40
+	Physical Defense: 35
+	Electric Attack: 15
+	Electric Defense: 40
+	Exp Reward: 40
+
+Evoke:
+	Types: Core / Air
+	Health: 20
+	Speed: 30
+	Physical Attack: 10
+	Physical Defense: 20
+	Electric Attack: 30
+	Electric Defense: 30
+	Exp Reward: 20
+
+Incite:
+	Types: Core / Air
+	Health: 30
+	Speed: 40
+	Physical Attack: 10
+	Physical Defense: 25
+	Electric Attack: 30
+	Electric Defense: 35
+	Exp Reward: 30
+
+Emanate:
+	Types: Core / Air
+	Health: 35
+	Speed: 50
+	Physical Attack: 15
+	Physical Defense: 30
+	Electric Attack: 35
+	Electric Defense: 40
+	Exp Reward: 40
+
+Electric Heater:
+	Types: Fire / Energy
+	Health: 10
+	Speed: 35
+	Physical Attack: 15
+	Physical Defense: 20
+	Electric Attack: 35
+	Electric Defense: 20
+	Exp Reward: 20
+
+Slag Heater:
+	Types: Fire / Energy
+	Health: 15
+	Speed: 45
+	Physical Attack: 24
+	Physical Defense: 23
+	Electric Attack: 40
+	Electric Defense: 23
+	Exp Reward: 30
+
+Phase Heater:
+	Types: Fire / Energy
+	Health: 20
+	Speed: 55
+	Physical Attack: 30
+	Physical Defense: 25
+	Electric Attack: 45
+	Electric Defense: 25
+	Exp Reward: 40
+
+Force Projector:
+	Types: Force / Defense
+	Health: 40
+	Speed: 35
+	Physical Attack: 25
+	Physical Defense: 30
+	Electric Attack: 25
+	Electric Defense: 20
+	Exp Reward: 35
+
+Duo:
+	Types: Normal / Defense
+	Health: 20
+	Speed: 25
+	Physical Attack: 25
+	Physical Defense: 25
+	Electric Attack: 15
+	Electric Defense: 25
+	Exp Reward: 20
+
+Salvo:
+	Types: Defense / x
+	Health: 25
+	Speed: 25
+	Physical Attack: 40
+	Physical Defense: 30
+	Electric Attack: 15
+	Electric Defense: 30
+	Exp Reward: 30
+
+Spectre:
+	Types: Defense / x
+	Health: 30
+	Speed: 30
+	Physical Attack: 50
+	Physical Defense: 35
+	Electric Attack: 20
+	Electric Defense: 35
+	Exp Reward: 40
+
+Arc:
+	Types: Energy / Defense
+	Health: 20
+	Speed: 20
+	Physical Attack: 15
+	Physical Defense: 25
+	Electric Attack: 30
+	Electric Defense: 25
+	Exp Reward: 20
+
+Lancer:
+	Types: Energy / Defense
+	Health: 25
+	Speed: 20
+	Physical Attack: 20
+	Physical Defense: 30
+	Electric Attack: 40
+	Electric Defense: 35
+	Exp Reward: 30
+
+Meltdown:
+	Types: Energy / Defense
+	Health: 35
+	Speed: 20
+	Physical Attack: 25
+	Physical Defense: 35
+	Electric Attack: 45
+	Electric Defense: 40
+	Exp Reward: 40
+
+Wave:
+	Types: Water / Defense
+	Health: 25
+	Speed: 30
+	Physical Attack: 20
+	Physical Defense: 25
+	Electric Attack: 20
+	Electric Defense: 25
+	Exp Reward: 25
+
+Tsunami:
+	Types: Fire / Defense
+	Health: 35
+	Speed: 35
+	Physical Attack: 30
+	Physical Defense: 30
+	Electric Attack: 25
+	Electric Defense: 30
+	Exp Reward: 35
+
+Parallax:
+	Types: Air / Defense
+	Health: 30
+	Speed: 50
+	Physical Attack: 15
+	Physical Defense: 30
+	Electric Attack: 25
+	Electric Defense: 30
+	Exp Reward: 35
+
+Reign:
+	Types: Offense / Ground
+	Health: 45
+	Speed: 30
+	Physical Attack: 60
+	Physical Defense: 45
+	Electric Attack: 40
+	Electric Defense: 40
+	Exp Reward: 50
+
+Corvus:
+	Types: Energy / Ground
+	Health: 40
+	Speed: 35
+	Physical Attack: 40
+	Physical Defense: 40
+	Electric Attack: 60
+	Electric Defense: 45
+	Exp Reward: 50
+
+Toxopid:
+	Types: Offense / Ground
+	Health: 30
+	Speed: 40
+	Physical Attack: 50
+	Physical Defense: 40
+	Electric Attack: 50
+	Electric Defense: 40
+	Exp Reward: 50
+
+Eclipse: 
+	Types: Offense / Air
+	Health: 45
+	Speed: 25
+	Physical Attack: 45
+	Physical Defense: 60
+	Electric Attack: 30
+	Electric Defense: 45
+	Exp Reward: 50
+
+Oct:
+	Types: Support / Air
+	Health: 50
+	Speed: 20
+	Physical Attack: 30
+	Physical Defense: 50
+	Electric Attack: 40
+	Electric Defense: 60
+	Exp Reward: 50
+
+World Processor:
+	Types: Logic / Core
+	Health: 40
+	Speed: 60
+	Physical Attack: 50
+	Physical Defense: 35
+	Electric Attack: 50
+	Electric Defense: 35
+	Exp Reward: 60
