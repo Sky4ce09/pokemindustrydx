@@ -2,6 +2,7 @@
 
 spl new databaseCompanion DatabaseCompanion 8:types 6:healthScalar 6:speed 6:pAtk 6:pDef 6:eAtk 6:eDef 6:expRewardScalar
 spl new moveset Moveset 7 * 4
+spl new companionIndex CompanionIndex 2 * 24
 
 expect cell1 cell2 cell3 cell4 cell5 cell6 bank1 display1 display2
 set messageInterface cell1
@@ -231,6 +232,12 @@ fun have getHealthAndTypes
 op add companionTypesIndex companionIDIndex 1
 op add companionHealthIndex companionIDIndex 2
 write companionID mainInterface companionIDIndex
+op mod indexSegment companionID 24
+op idiv indexSlot companionID 24
+op add indexSlot indexSlot 34
+read companionIndex battleInterface indexSlot
+spl wd- 0b10 CompanionIndex indexSegment
+write companionIndex battleInterface indexSlot
 write types mainInterface companionTypesIndex
 write maxHealth mainInterface companionHealthIndex
 read fightingCompanionIndex battleInterface 43
